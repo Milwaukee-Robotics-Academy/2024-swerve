@@ -48,5 +48,13 @@ public final class Constants
     public static final double LEFT_Y_DEADBAND  = 0.01;
     public static final double RIGHT_X_DEADBAND = 0.01;
     public static final double TURN_CONSTANT    = 6;
+
+  }
+  public static class ShooterConstants {
+    public static final int kFlywheelMotorPort = 6;
+    public static final int kShooterMotorPort = 5;
+
+    public static final int kFlywheelLeftMotorPort = 8 ;
+    public static final int kShooterLeftMotorPort = 7;
   }
 }
