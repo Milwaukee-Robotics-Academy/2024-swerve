@@ -30,6 +30,21 @@ public class Intake extends SubsystemBase {
 
   }
 
+  public void in(){
+    m_leftIntake.set(1);
+    m_rightIntake.set(1);
+  }
+
+  public void out(){
+    m_leftIntake.set(-.5);
+    m_rightIntake.set(-.5);
+  }
+
+  public void stop(){
+    m_leftIntake.set(0);
+    m_rightIntake.set(0);
+  }
+  
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

@@ -10,12 +10,14 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
@@ -31,7 +33,8 @@ public class RobotContainer
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve"));
-  private final  Shooter shooter = new Shooter();                                                                
+  private final  Shooter shooter = new Shooter();          
+  private final Intake intake = new Intake();                                                      
     // CommandJoystick rotationController = new CommandJoystick(1);
   // Replace with CommandPS4Controller or CommandJoystick if needed
   CommandJoystick driverController = new CommandJoystick(1);
@@ -101,8 +104,15 @@ public class RobotContainer
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
     driverXbox.start().onTrue((new InstantCommand(drivebase::zeroGyro)));
-    driverXbox.a().whileTrue(new InstantCommand(()->shooter.shoot()).handleInterrupt(() -> shooter.stop()));
+    driverXbox.a().whileTrue(new ParallelCommandGroup(
+      new InstantCommand(()->shooter.shoot()).handleInterrupt(() -> shooter.stop()),
+      new InstantCommand(()->intake.in()).handleInterrupt(() -> intake.stop()))
+    );
     driverXbox.b().onTrue(new InstantCommand(()->shooter.stop()));
+
+    //intake
+    driverXbox.y().onTrue(new InstantCommand(()->intake.in()));
+    driverXbox.x().onTrue(new InstantCommand(()->intake.out()));
 //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
   }
 
