@@ -10,11 +10,12 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 
 public class Intake extends SubsystemBase {
-   private CANSparkMax m_leftIntake = new CANSparkMax(ShooterConstants.kFlywheelMotorPort, MotorType.kBrushless);
-    private CANSparkMax m_rightIntake = new CANSparkMax(ShooterConstants.kFlywheelLeftMotorPort, MotorType.kBrushless);
+   private CANSparkMax m_leftIntake = new CANSparkMax(IntakeConstants.kLeftMotorPort, MotorType.kBrushless);
+    private CANSparkMax m_rightIntake = new CANSparkMax(IntakeConstants.kRightMotorPort, MotorType.kBrushless);
   /** Creates a new Intake. */
   public Intake() {
 
@@ -25,14 +26,14 @@ public class Intake extends SubsystemBase {
       m_rightIntake.restoreFactoryDefaults();
        m_rightIntake.setSmartCurrentLimit(80);
        m_rightIntake.setIdleMode(IdleMode.kBrake);
-       m_rightIntake.setInverted(false);
+       m_rightIntake.setInverted(true);
      
 
   }
 
   public void in(){
-    m_leftIntake.set(1);
-    m_rightIntake.set(1);
+    m_leftIntake.set(.75);
+    m_rightIntake.set(.75);
   }
 
   public void out(){
