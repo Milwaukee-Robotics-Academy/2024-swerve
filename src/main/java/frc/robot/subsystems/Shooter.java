@@ -32,19 +32,19 @@ public class Shooter extends SubsystemBase
       m_flywheel.restoreFactoryDefaults();
       m_flywheel.setSmartCurrentLimit(80);
       m_flywheel.setIdleMode(IdleMode.kBrake);
-      m_flywheel.setInverted(true);
+      m_flywheel.setInverted(false);
       m_flywheelLeft.restoreFactoryDefaults();
        m_flywheelLeft.setSmartCurrentLimit(80);
        m_flywheelLeft.setIdleMode(IdleMode.kBrake);
-       m_flywheelLeft.setInverted(false);
+       m_flywheelLeft.setInverted(true);
       m_triggerMotor.restoreFactoryDefaults();
       m_triggerMotor.setSmartCurrentLimit(80);
       m_triggerMotor.setIdleMode(IdleMode.kBrake);
-      m_triggerMotor.setInverted(true);
+      m_triggerMotor.setInverted(false);
        m_triggerMotorLeft.restoreFactoryDefaults();
        m_triggerMotorLeft.setSmartCurrentLimit(80);
        m_triggerMotorLeft.setIdleMode(IdleMode.kBrake);
-       m_triggerMotorLeft.setInverted(false);
+       m_triggerMotorLeft.setInverted(true);
       SmartDashboard.putNumber("FW-Encoder/speed",m_flywheelEncoder.getVelocity());
       SmartDashboard.putNumber("FW-Encoder/distance",m_flywheelEncoder.getPosition());
       SmartDashboard.putNumber("Trigger-Encoder/speed",m_flywheelEncoder.getVelocity());
@@ -93,7 +93,9 @@ public double getBottomMotorSpeed() {
   public void shoot()
   {
     m_triggerMotor.set(1);
-     m_triggerMotorLeft.set(1);
+    m_triggerMotorLeft.set(.25);
+    m_flywheel.set(1);
+    m_flywheelLeft.set(1);
   }
   
   public void setMotorSpeed(double topSpeed, double bottomSpeed) {
