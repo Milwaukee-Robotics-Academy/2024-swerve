@@ -58,8 +58,6 @@ public class Shooter extends SubsystemBase
   {
     m_triggerMotor.set(speed);
     m_flywheel.set(speed);
-   // m_triggerMotorLeft.set(speed);
-m_flywheelLeft.set(speed);
   }
   public double getTopMotorSpeed() {
     return m_flywheel.getEncoder().getVelocity();
