@@ -20,11 +20,11 @@ public class Intake extends SubsystemBase {
   public Intake() {
 
       m_leftIntake.restoreFactoryDefaults();
-      m_leftIntake.setSmartCurrentLimit(80);
+      m_leftIntake.setSmartCurrentLimit(20);
       m_leftIntake.setIdleMode(IdleMode.kBrake);
       m_leftIntake.setInverted(true);
       m_rightIntake.restoreFactoryDefaults();
-       m_rightIntake.setSmartCurrentLimit(80);
+       m_rightIntake.setSmartCurrentLimit(20);
        m_rightIntake.setIdleMode(IdleMode.kBrake);
        m_rightIntake.setInverted(true);
      
@@ -45,7 +45,7 @@ public class Intake extends SubsystemBase {
     m_leftIntake.set(0);
     m_rightIntake.set(0);
   }
-  
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
