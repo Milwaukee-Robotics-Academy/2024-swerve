@@ -25,8 +25,8 @@ public class Shooter extends SubsystemBase
     private RelativeEncoder m_triggerEncoder = m_flywheel.getEncoder();
     private CANSparkMax m_flywheelLeft = new CANSparkMax(ShooterConstants.kFlywheelLeftMotorPort, MotorType.kBrushless);
      private RelativeEncoder m_flywheelEncoderLeft = m_flywheel.getEncoder();
-    //  private CANSparkMax m_triggerMotorLeft = new CANSparkMax(ShooterConstants.kShooterLeftMotorPort, MotorType.kBrushless);
-    //  private RelativeEncoder m_triggerEncoderLeft = m_flywheel.getEncoder();
+      private CANSparkMax m_triggerMotorLeft = new CANSparkMax(ShooterConstants.kShooterLeftMotorPort, MotorType.kBrushless);
+      private RelativeEncoder m_triggerEncoderLeft = m_flywheel.getEncoder();
     public Shooter()
     {
       m_flywheel.restoreFactoryDefaults();
@@ -41,10 +41,10 @@ public class Shooter extends SubsystemBase
       m_triggerMotor.setSmartCurrentLimit(80);
       m_triggerMotor.setIdleMode(IdleMode.kBrake);
       m_triggerMotor.setInverted(false);
-      //  m_triggerMotorLeft.restoreFactoryDefaults();
-      //  m_triggerMotorLeft.setSmartCurrentLimit(80);
-      //  m_triggerMotorLeft.setIdleMode(IdleMode.kBrake);
-      //  m_triggerMotorLeft.setInverted(true);
+        m_triggerMotorLeft.restoreFactoryDefaults();
+        m_triggerMotorLeft.setSmartCurrentLimit(80);
+        m_triggerMotorLeft.setIdleMode(IdleMode.kBrake);
+        m_triggerMotorLeft.setInverted(true);
       SmartDashboard.putNumber("FW-Encoder/speed",m_flywheelEncoder.getVelocity());
       SmartDashboard.putNumber("FW-Encoder/distance",m_flywheelEncoder.getPosition());
       SmartDashboard.putNumber("Trigger-Encoder/speed",m_flywheelEncoder.getVelocity());
@@ -71,7 +71,7 @@ public double getBottomMotorSpeed() {
   {
     m_triggerMotor.stopMotor();
     m_flywheel.stopMotor();
-      // m_triggerMotorLeft.stopMotor();
+       m_triggerMotorLeft.stopMotor();
      m_flywheelLeft.stopMotor();
   }
 
@@ -80,7 +80,7 @@ public double getBottomMotorSpeed() {
   {
     m_triggerMotor.set(-0.25);
     m_flywheel.set(-0.25);
-    // m_triggerMotorLeft.set(-0.25);
+     m_triggerMotorLeft.set(-0.25);
      m_flywheelLeft.set(-0.25);
   }
 
@@ -93,16 +93,16 @@ public double getBottomMotorSpeed() {
   public void shoot()
   {
     m_triggerMotor.set(1);
-    // m_triggerMotorLeft.set(.25);
-    m_flywheel.set(1);
-    m_flywheelLeft.set(1);
+    m_triggerMotorLeft.set(1);
+    m_flywheel.set(.5);
+    m_flywheelLeft.set(.5);
   }
   
   public void setMotorSpeed(double topSpeed, double bottomSpeed) {
     m_flywheel.set(topSpeed);
     m_triggerMotor.set(bottomSpeed);
-     m_flywheelLeft.set(topSpeed);
-    //  m_triggerMotorLeft.set(bottomSpeed);
+    m_flywheelLeft.set(topSpeed);
+    m_triggerMotorLeft.set(bottomSpeed);
 }
   /** The log method puts interesting information to the SmartDashboard. */
   public void log() 
