@@ -26,7 +26,7 @@ public class Photonvision extends SubsystemBase{
   	PhotonPoseEstimator photonPoseEstimator;
 
     public Photonvision() {
-        camera = new PhotonCamera("greencase");
+        camera = new PhotonCamera("Arducam_OV9281_USB_Camera");
         pipelineResult = new PhotonPipelineResult();
         /**
  *  Vision setup
