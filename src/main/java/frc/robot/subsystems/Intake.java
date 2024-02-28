@@ -16,6 +16,7 @@ import frc.robot.Constants.ShooterConstants;
 public class Intake extends SubsystemBase {
    private CANSparkMax m_leftIntake = new CANSparkMax(IntakeConstants.kLeftMotorPort, MotorType.kBrushless);
     private CANSparkMax m_rightIntake = new CANSparkMax(IntakeConstants.kRightMotorPort, MotorType.kBrushless);
+    
   /** Creates a new Intake. */
   public Intake() {
 

@@ -111,6 +111,11 @@ public class RobotContainer
     );
     driverXbox.b().onTrue(new InstantCommand(()->shooter.stop()));
 
+    /** temporary intake */
+    driverXbox.leftBumper().whileTrue(
+      new InstantCommand(()->shooter.shooterIntake()).handleInterrupt(() -> shooter.stop())
+    );
+      //   driverXbox.leftBumper().onFalse(new InstantCommand(()->shooter.stop()));
     //intake
      driverXbox.y().whileTrue(new InstantCommand(()->intake.in()).handleInterrupt(() -> intake.stop()));
      driverXbox.x().whileTrue(new InstantCommand(()->intake.in()).handleInterrupt(() -> intake.stop()));

@@ -82,6 +82,11 @@ public double getBottomMotorSpeed() {
     m_flywheel.set(-0.25);
      m_triggerMotorLeft.set(-0.25);
      m_flywheelLeft.set(-0.25);
+
+
+
+
+
   }
 
   public void readyFlywheel()
@@ -98,6 +103,13 @@ public double getBottomMotorSpeed() {
     m_flywheelLeft.set(.5);
   }
   
+   public void shooterIntake()
+  {
+    m_triggerMotor.set(-.5);
+    m_triggerMotorLeft.set(-.5);
+    m_flywheel.set(-.5);
+    m_flywheelLeft.set(-.5);
+  }
   public void setMotorSpeed(double topSpeed, double bottomSpeed) {
     m_flywheel.set(topSpeed);
     m_triggerMotor.set(bottomSpeed);
