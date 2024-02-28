@@ -5,10 +5,12 @@
 package frc.robot.subsystems.swervedrive;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -143,18 +145,18 @@ public class SwerveSubsystem extends SubsystemBase
    * @param setOdomToStart Set the odometry position to the start of the path.
    * @return {@link AutoBuilder#followPath(PathPlannerPath)} path command.
    */
-  public Command getAutonomousCommand(String pathName, boolean setOdomToStart)
+  public Command getAutonomousCommand(String pathName)
   {
     // Load the path you want to follow using its name in the GUI
-    PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+    // PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
 
-    if (setOdomToStart)
-    {
-      resetOdometry(new Pose2d(path.getPoint(0).position, getHeading()));
-    }
+    // if (setOdomToStart)
+    // {
+    //   resetOdometry(new Pose2d(path.getPoint(0).position, getHeading()));
+    // }
 
     // Create a path following command using AutoBuilder. This will also trigger event markers.
-    return AutoBuilder.followPath(path);
+    return new PathPlannerAuto(pathName);
   }
 
   /**
@@ -177,7 +179,7 @@ public class SwerveSubsystem extends SubsystemBase
       driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(xInput, yInput,
                                                                       headingX.getAsDouble(),
                                                                       headingY.getAsDouble(),
-                                                                      swerveDrive.getYaw().getRadians(),
+                                                                      swerveDrive.getOdometryHeading().getRadians(),
                                                                       swerveDrive.getMaximumVelocity()));
     });
   }
@@ -351,7 +353,7 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public Rotation2d getHeading()
   {
-    return swerveDrive.getOdometryHeading();
+    return getPose().getRotation();
   }
 
   /**
