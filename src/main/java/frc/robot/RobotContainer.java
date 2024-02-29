@@ -13,11 +13,16 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Photonvision;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
@@ -36,14 +41,15 @@ public class RobotContainer
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem m_drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve-practice"));
-
+  private final  Shooter shooter = new Shooter();          
+  private final Intake intake = new Intake();                                                      
   private final Photonvision m_photonvision = new Photonvision();                                                                      
   // CommandJoystick rotationController = new CommandJoystick(1);
   // Replace with CommandPS4Controller or CommandJoystick if needed
   CommandJoystick driverController = new CommandJoystick(1);
 
   // CommandJoystick driverController   = new CommandJoystick(3);//(OperatorConstants.DRIVER_CONTROLLER_PORT);
-  XboxController driverXbox = new XboxController(0);
+  CommandXboxController driverXbox = new CommandXboxController(0);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -85,8 +91,24 @@ public class RobotContainer
   {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
-    new JoystickButton(driverXbox, 1).onTrue((new InstantCommand(m_drivebase::zeroGyro))); // this uses the A button
-    new JoystickButton(driverXbox, 3).onTrue(new InstantCommand(m_drivebase::addFakeVisionReading));
+
+    driverXbox.start().onTrue((new InstantCommand(drivebase::zeroGyro)));
+    driverXbox.a().whileTrue(new ParallelCommandGroup(
+      new InstantCommand(()->shooter.shoot()).handleInterrupt(() -> shooter.stop()),
+      new InstantCommand(()->intake.in()).handleInterrupt(() -> intake.stop()))
+    );
+    driverXbox.b().onTrue(new InstantCommand(()->shooter.stop()));
+
+    /** temporary intake */
+    driverXbox.leftBumper().whileTrue(
+      new InstantCommand(()->shooter.shooterIntake()).handleInterrupt(() -> shooter.stop())
+    );
+      //   driverXbox.leftBumper().onFalse(new InstantCommand(()->shooter.stop()));
+    //intake
+     driverXbox.y().whileTrue(new InstantCommand(()->intake.in()).handleInterrupt(() -> intake.stop()));
+     driverXbox.x().whileTrue(new InstantCommand(()->intake.in()).handleInterrupt(() -> intake.stop()));
+     driverXbox.y().onFalse(new InstantCommand(()->intake.stop()));
+     driverXbox.x().onFalse(new InstantCommand(()->intake.stop()));
 //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
   }
 
