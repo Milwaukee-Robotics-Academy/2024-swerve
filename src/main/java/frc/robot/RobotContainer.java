@@ -85,7 +85,7 @@ public class RobotContainer
   {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
-    new JoystickButton(driverXbox, 1).onTrue((new InstantCommand(m_drivebase::zeroGyro)));
+    new JoystickButton(driverXbox, 1).onTrue((new InstantCommand(m_drivebase::zeroGyro))); // this uses the A button
     new JoystickButton(driverXbox, 3).onTrue(new InstantCommand(m_drivebase::addFakeVisionReading));
 //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
   }
