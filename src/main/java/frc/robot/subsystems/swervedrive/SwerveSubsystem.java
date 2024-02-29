@@ -147,6 +147,7 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public Command getAutonomousCommand(String pathName)
   {
+
     // Load the path you want to follow using its name in the GUI
     // PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
 
@@ -154,6 +155,7 @@ public class SwerveSubsystem extends SubsystemBase
     // {
     //   resetOdometry(new Pose2d(path.getPoint(0).position, getHeading()));
     // }
+
 
     // Create a path following command using AutoBuilder. This will also trigger event markers.
     return new PathPlannerAuto(pathName);
@@ -200,7 +202,7 @@ public class SwerveSubsystem extends SubsystemBase
       driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(translationX.getAsDouble(),
                                                                       translationY.getAsDouble(),
                                                                       rotation.getAsDouble() * Math.PI,
-                                                                      swerveDrive.getYaw().getRadians(),
+                                                                      swerveDrive.getOdometryHeading().getRadians(),
                                                                       swerveDrive.getMaximumVelocity()));
     });
   }
