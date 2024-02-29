@@ -33,10 +33,10 @@ public class RobotContainer
 
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
-                                                                         "swerve"));
+                                                                         "swerve-practice"));
   private final  Shooter shooter = new Shooter();          
   private final Intake intake = new Intake();                                                      
-    // CommandJoystick rotationController = new CommandJoystick(1);
+  // CommandJoystick rotationController = new CommandJoystick(1);
   // Replace with CommandPS4Controller or CommandJoystick if needed
   CommandJoystick driverController = new CommandJoystick(1);
 
@@ -134,8 +134,7 @@ public class RobotContainer
   public Command getAutonomousCommand()
   {
     // An example command will be run in autonomous
-   // return drivebase.getAutonomousCommand("New Path", true);
-   return new WaitCommand(1);
+    return drivebase.getAutonomousCommand("New Path");
   }
 
   public void setDriveMode()
