@@ -122,7 +122,7 @@ public class RobotContainer
   public Command getAutonomousCommand()
   {
     // An example command will be run in autonomous
-    return m_drivebase.getAutonomousCommand("New Path");
+    return m_drivebase.getAutonomousCommand("tenfeet", true);
   }
 
   public void setDriveMode()
@@ -135,21 +135,22 @@ public class RobotContainer
     m_drivebase.setMotorBrake(brake);
   }
 
-  public void periodic(){
+  public void periodic()
+  {
+  // Check to see if photonvision can see Apriltag targets. if so, get an estimated robot pose based on target and update the odometry
+	// if (m_photonvision.hasTargets()) {
+	// 		Optional<EstimatedRobotPose> estimatedPose = m_photonvision.getEstimatedGlobalPose(m_drivebase.getPose());
+	// 		if (estimatedPose.isPresent()) {
+	// 			Pose2d robotPose2d = estimatedPose.get().estimatedPose.toPose2d();
+	// 			double distance = m_photonvision.getBestTarget().getBestCameraToTarget().getTranslation().getNorm();
 
-    // Check to see if photonvision can see Apriltag targets. if so, get an estimated robot pose based on target and update the odometry
-	if (m_photonvision.hasTargets()) {
-			Optional<EstimatedRobotPose> estimatedPose = m_photonvision.getEstimatedGlobalPose(m_drivebase.getPose());
-			if (estimatedPose.isPresent()) {
-				Pose2d robotPose2d = estimatedPose.get().estimatedPose.toPose2d();
-				double distance = m_photonvision.getBestTarget().getBestCameraToTarget().getTranslation().getNorm();
-
-				//Scale confidence in Vision Measurements based on distance
-			//	m_drivebase.setVisionMeasurementStdDevs(MatBuilder.fill(Nat.N3(), Nat.N1(), distance * 1.2, distance * 1.2, 0.01));//TODO: find and fix!
-        //Add VisionMeasurement to odometry
-				m_drivebase.addVisionMeasurement(new Pose2d(robotPose2d.getTranslation(), m_drivebase.getHeading()), estimatedPose.get().timestampSeconds);
-			}
-		}
+	// 			//Scale confidence in Vision Measurements based on distance
+	// 		//	m_drivebase.setVisionMeasurementStdDevs(MatBuilder.fill(Nat.N3(), Nat.N1(), distance * 1.2, distance * 1.2, 0.01));//TODO: find and fix!
+  //       //Add VisionMeasurement to odometry
+	// 			m_drivebase.addVisionMeasurement(new Pose2d(robotPose2d.getTranslation(), m_drivebase.getHeading()), estimatedPose.get().timestampSeconds);
+	// 		}
+	// 	}
+  // TODO uncomment this code
 
   }
 }

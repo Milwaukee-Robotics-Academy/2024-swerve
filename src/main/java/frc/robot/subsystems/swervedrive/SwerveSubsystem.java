@@ -114,7 +114,7 @@ public class SwerveSubsystem extends SubsystemBase
         this::getRobotVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         this::setChassisSpeeds, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                                         new PIDConstants(5.0, 0.0, 0.0),
+                                         new PIDConstants(10.0, 0.0, 0.0),
                                          // Translation PID constants
                                          new PIDConstants(swerveDrive.swerveController.config.headingPIDF.p,
                                                           swerveDrive.swerveController.config.headingPIDF.i,
@@ -145,20 +145,20 @@ public class SwerveSubsystem extends SubsystemBase
    * @param setOdomToStart Set the odometry position to the start of the path.
    * @return {@link AutoBuilder#followPath(PathPlannerPath)} path command.
    */
-  public Command getAutonomousCommand(String pathName)
+  public Command getAutonomousCommand(String pathName, boolean setOdomToStart)
   {
 
     // Load the path you want to follow using its name in the GUI
-    // PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+    PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
 
-    // if (setOdomToStart)
-    // {
-    //   resetOdometry(new Pose2d(path.getPoint(0).position, getHeading()));
-    // }
+    if (setOdomToStart)
+    {
+      resetOdometry(new Pose2d(path.getPoint(0).position, getHeading()));
+    }
 
 
     // Create a path following command using AutoBuilder. This will also trigger event markers.
-    return new PathPlannerAuto(pathName);
+    return AutoBuilder.followPath(path);
   }
 
   /**
