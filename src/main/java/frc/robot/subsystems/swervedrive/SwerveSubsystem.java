@@ -138,27 +138,49 @@ public class SwerveSubsystem extends SubsystemBase
                                   );
   }
 
+  // /**
+  //  * Get the path follower with events.
+  //  *
+  //  * @param pathName       PathPlanner path name.
+  //  * @param setOdomToStart Set the odometry position to the start of the path.
+  //  * @return {@link AutoBuilder#followPath(PathPlannerPath)} path command.
+  //  */
+  // public Command getAutonomousCommand(String pathName, boolean setOdomToStart)
+  // {
+
+  //   // Load the path you want to follow using its name in the GUI
+  //   PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+
+  //   if (setOdomToStart)
+  //   {
+  //     resetOdometry(new Pose2d(path.getPoint(0).position, getHeading()));
+  //   }
+
+
+  //   // Create a path following command using AutoBuilder. This will also trigger event markers.
+  //   return AutoBuilder.followPath(path);
+  // }
   /**
-   * Get the path follower with events.
+   * Get Auto command with events.
    *
-   * @param pathName       PathPlanner path name.
+   * @param autoName       PathPlanner auto name.
    * @param setOdomToStart Set the odometry position to the start of the path.
-   * @return {@link AutoBuilder#followPath(PathPlannerPath)} path command.
+   * @return {@link PathPlannerAuto)} auto command.
    */
-  public Command getAutonomousCommand(String pathName, boolean setOdomToStart)
+  public Command getAutonomousCommand(String autoName, boolean setOdomToStart)
   {
 
-    // Load the path you want to follow using its name in the GUI
-    PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+    // Load the auto you want to follow using its name in the GUI
+    PathPlannerAuto path = new PathPlannerAuto(autoName);
 
     if (setOdomToStart)
     {
-      resetOdometry(new Pose2d(path.getPoint(0).position, getHeading()));
+      resetOdometry(PathPlannerAuto.getStaringPoseFromAutoFile(autoName));
     }
 
 
-    // Create a path following command using AutoBuilder. This will also trigger event markers.
-    return AutoBuilder.followPath(path);
+    // return the previouslty built auto command.
+    return path;
   }
 
   /**
