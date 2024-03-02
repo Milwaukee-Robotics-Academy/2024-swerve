@@ -127,7 +127,6 @@ public class SwerveSubsystem extends SubsystemBase
         },
         this // Reference to this subsystem to set requirements
                                   );
-    );
     NamedCommands.registerCommand("pickupOn", null);
     NamedCommands.registerCommand("pickupOff", null);
   }
