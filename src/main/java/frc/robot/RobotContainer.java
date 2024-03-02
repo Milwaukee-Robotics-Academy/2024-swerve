@@ -11,9 +11,12 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -29,6 +32,8 @@ import java.io.File;
 import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
+
+import com.pathplanner.lib.auto.NamedCommands;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -114,6 +119,17 @@ public class RobotContainer
 //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
   }
 
+  public void namedCommandsConfig()
+  {
+    NamedCommands.registerCommand("shoot", 
+      new SequentialCommandGroup(
+        new InstantCommand(shooter::shoot),
+        new WaitCommand(1),
+        new InstantCommand(shooter::stop)
+      )
+    );
+  }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
@@ -137,6 +153,16 @@ public class RobotContainer
 
   public void periodic()
   {
+    if (m_photonvision.hasTargets())
+    {
+      Optional<EstimatedRobotPose> estimatedPose = m_photonvision.getEstimatedGlobalPose(m_drivebase.getPose());
+      if (estimatedPose.isPresent())
+      {
+        Pose2d robotPose2d = estimatedPose.get().estimatedPose.toPose2d();
+        double distance = m_photonvision.getBestTarget().getBestCameraToTarget().getTranslation().getNorm();
+      }
+    }
+    SmartDashboard.putData("HD_USB_Camera-output", m_photonvision);
   // Check to see if photonvision can see Apriltag targets. if so, get an estimated robot pose based on target and update the odometry
 	// if (m_photonvision.hasTargets()) {
 	// 		Optional<EstimatedRobotPose> estimatedPose = m_photonvision.getEstimatedGlobalPose(m_drivebase.getPose());
