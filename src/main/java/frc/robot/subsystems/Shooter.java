@@ -21,11 +21,11 @@ public class Shooter extends SubsystemBase
 {
     private CANSparkMax m_flywheel = new CANSparkMax(ShooterConstants.kFlywheelMotorPort, MotorType.kBrushless);
     private RelativeEncoder m_flywheelEncoder = m_flywheel.getEncoder();
-    private CANSparkMax m_triggerMotor = new CANSparkMax(ShooterConstants.kShooterMotorPort, MotorType.kBrushless);
+    private CANSparkMax m_triggerMotor = new CANSparkMax(ShooterConstants.kTriggerMotorPort, MotorType.kBrushless);
     private RelativeEncoder m_triggerEncoder = m_flywheel.getEncoder();
     private CANSparkMax m_flywheelLeft = new CANSparkMax(ShooterConstants.kFlywheelLeftMotorPort, MotorType.kBrushless);
      private RelativeEncoder m_flywheelEncoderLeft = m_flywheel.getEncoder();
-      private CANSparkMax m_triggerMotorLeft = new CANSparkMax(ShooterConstants.kShooterLeftMotorPort, MotorType.kBrushless);
+      private CANSparkMax m_triggerMotorLeft = new CANSparkMax(ShooterConstants.kTriggerLeftMotorPort, MotorType.kBrushless);
       private RelativeEncoder m_triggerEncoderLeft = m_flywheel.getEncoder();
     public Shooter()
     {
@@ -69,24 +69,17 @@ public double getBottomMotorSpeed() {
 
   public void stop()
   {
-    m_triggerMotor.stopMotor();
-    m_flywheel.stopMotor();
-       m_triggerMotorLeft.stopMotor();
-     m_flywheelLeft.stopMotor();
+    m_triggerMotor.set(0);
+    m_flywheel.set(0);
+       m_triggerMotorLeft.set(0);
+     m_flywheelLeft.set(0);
   }
 
 
   public void intake()
   {
-    m_triggerMotor.set(-0.25);
-    m_flywheel.set(-0.25);
-     m_triggerMotorLeft.set(-0.25);
-     m_flywheelLeft.set(-0.25);
-
-
-
-
-
+    m_triggerMotor.set(0.3);
+     m_triggerMotorLeft.set(0.3);
   }
 
   public void readyFlywheel()
@@ -103,13 +96,6 @@ public double getBottomMotorSpeed() {
     m_flywheelLeft.set(.5);
   }
   
-   public void shooterIntake()
-  {
-    m_triggerMotor.set(-.5);
-    m_triggerMotorLeft.set(-.5);
-    m_flywheel.set(-.5);
-    m_flywheelLeft.set(-.5);
-  }
   public void setMotorSpeed(double topSpeed, double bottomSpeed) {
     m_flywheel.set(topSpeed);
     m_triggerMotor.set(bottomSpeed);
