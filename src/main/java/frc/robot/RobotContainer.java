@@ -108,14 +108,19 @@ public class RobotContainer
 
     /** temporary intake */
     driverXbox.leftBumper().whileTrue(
-      new InstantCommand(()->shooter.shooterIntake()).handleInterrupt(() -> shooter.stop())
+      new InstantCommand(()->shooter.intake()).handleInterrupt(() -> shooter.stop())
     );
       //   driverXbox.leftBumper().onFalse(new InstantCommand(()->shooter.stop()));
     //intake
+    driverXbox.x().whileTrue(new ParallelCommandGroup(
+      new InstantCommand(()->intake.in()).handleInterrupt(() -> intake.stop()),
+      new InstantCommand(()->shooter.intake()).handleInterrupt(() -> shooter.stop())
+    ));
+    driverXbox.x().onFalse(new ParallelCommandGroup(new InstantCommand(()->intake.stop()),
+     new InstantCommand(()->shooter.stop()).handleInterrupt(() -> shooter.stop())));
      driverXbox.y().whileTrue(new InstantCommand(()->intake.in()).handleInterrupt(() -> intake.stop()));
-     driverXbox.x().whileTrue(new InstantCommand(()->intake.in()).handleInterrupt(() -> intake.stop()));
      driverXbox.y().onFalse(new InstantCommand(()->intake.stop()));
-     driverXbox.x().onFalse(new InstantCommand(()->intake.stop()));
+
 //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
   }
 
