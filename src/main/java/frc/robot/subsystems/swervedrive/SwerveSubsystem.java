@@ -5,20 +5,28 @@
 package frc.robot.subsystems.swervedrive;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.io.File;
 import java.util.function.DoubleSupplier;
@@ -31,6 +39,8 @@ import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
+
+
 public class SwerveSubsystem extends SubsystemBase
 {
 
@@ -42,6 +52,8 @@ public class SwerveSubsystem extends SubsystemBase
    * Maximum speed of the robot in meters per second, used to limit acceleration.
    */
   public        double      maximumSpeed = Units.feetToMeters(16.0);
+
+
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -78,20 +90,11 @@ public class SwerveSubsystem extends SubsystemBase
     swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
 
     setupPathPlanner();
+
+
   }
 
-  /**
-   * Construct the swerve drive.
-   *
-   * @param driveCfg      SwerveDriveConfiguration for the swerve.
-   * @param controllerCfg Swerve Controller.
-   */
-  public SwerveSubsystem(SwerveDriveConfiguration driveCfg, SwerveControllerConfiguration controllerCfg)
-  {
-    swerveDrive = new SwerveDrive(driveCfg, controllerCfg, maximumSpeed);
-  }
-
-  /**
+/**
    * Setup AutoBuilder for PathPlanner.
    */
   public void setupPathPlanner()
@@ -102,11 +105,11 @@ public class SwerveSubsystem extends SubsystemBase
         this::getRobotVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         this::setChassisSpeeds, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                                         new PIDConstants(5.0, 0.0, 0.0),
+                                         new PIDConstants(0.008, 0.0, 0.0),
                                          // Translation PID constants
                                          new PIDConstants(swerveDrive.swerveController.config.headingPIDF.p,
                                                           swerveDrive.swerveController.config.headingPIDF.i,
-                                                          swerveDrive.swerveController.config.headingPIDF.d),
+                                                         swerveDrive.swerveController.config.headingPIDF.d),
                                          // Rotation PID constants
                                          4.5,
                                          // Max module speed, in m/s
@@ -124,27 +127,64 @@ public class SwerveSubsystem extends SubsystemBase
         },
         this // Reference to this subsystem to set requirements
                                   );
+    NamedCommands.registerCommand("pickupOn", null);
+    NamedCommands.registerCommand("pickupOff", null);
   }
 
   /**
-   * Get the path follower with events.
+   * Construct the swerve drive.
    *
-   * @param pathName       PathPlanner path name.
-   * @param setOdomToStart Set the odometry position to the start of the path.
-   * @return {@link AutoBuilder#followPath(PathPlannerPath)} path command.
+   * @param driveCfg      SwerveDriveConfiguration for the swerve.
+   * @param controllerCfg Swerve Controller.
    */
-  public Command getAutonomousCommand(String pathName, boolean setOdomToStart)
+  public SwerveSubsystem(SwerveDriveConfiguration driveCfg, SwerveControllerConfiguration controllerCfg)
   {
-    // Load the path you want to follow using its name in the GUI
-    PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+    swerveDrive = new SwerveDrive(driveCfg, controllerCfg, maximumSpeed);
+  }
+
+  // /**
+  //  * Get the path follower with events.
+  //  *
+  //  * @param pathName       PathPlanner path name.
+  //  * @param setOdomToStart Set the odometry position to the start of the path.
+  //  * @return {@link AutoBuilder#followPath(PathPlannerPath)} path command.
+  //  */
+  // public Command getAutonomousCommand(String pathName, boolean setOdomToStart)
+  // {
+
+  //   // Load the path you want to follow using its name in the GUI
+  //   PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+
+  //   if (setOdomToStart)
+  //   {
+  //     resetOdometry(new Pose2d(path.getPoint(0).position, getHeading()));
+  //   }
+
+
+  //   // Create a path following command using AutoBuilder. This will also trigger event markers.
+  //   return AutoBuilder.followPath(path);
+  // }
+  /**
+   * Get Auto command with events.
+   *
+   * @param autoName       PathPlanner auto name.
+   * @param setOdomToStart Set the odometry position to the start of the path.
+   * @return {@link PathPlannerAuto)} auto command.
+   */
+  public Command getAutonomousCommand(String autoName, boolean setOdomToStart)
+  {
+
+    // Load the auto you want to follow using its name in the GUI
+    PathPlannerAuto path = new PathPlannerAuto(autoName);
 
     if (setOdomToStart)
     {
-      resetOdometry(new Pose2d(path.getPoint(0).position, getHeading()));
+      resetOdometry(PathPlannerAuto.getStaringPoseFromAutoFile(autoName));
     }
 
-    // Create a path following command using AutoBuilder. This will also trigger event markers.
-    return AutoBuilder.followPath(path);
+
+    // return the previouslty built auto command.
+    return path;
   }
 
   /**
@@ -167,7 +207,7 @@ public class SwerveSubsystem extends SubsystemBase
       driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(xInput, yInput,
                                                                       headingX.getAsDouble(),
                                                                       headingY.getAsDouble(),
-                                                                      swerveDrive.getYaw().getRadians(),
+                                                                      swerveDrive.getOdometryHeading().getRadians(),
                                                                       swerveDrive.getMaximumVelocity()));
     });
   }
@@ -188,7 +228,7 @@ public class SwerveSubsystem extends SubsystemBase
       driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(translationX.getAsDouble(),
                                                                       translationY.getAsDouble(),
                                                                       rotation.getAsDouble() * Math.PI,
-                                                                      swerveDrive.getYaw().getRadians(),
+                                                                      swerveDrive.getOdometryHeading().getRadians(),
                                                                       swerveDrive.getMaximumVelocity()));
     });
   }
@@ -256,8 +296,7 @@ public class SwerveSubsystem extends SubsystemBase
   }
 
   @Override
-  public void periodic()
-  {
+  public void periodic() {
   }
 
   @Override
@@ -342,7 +381,7 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public Rotation2d getHeading()
   {
-    return swerveDrive.getYaw();
+    return getPose().getRotation();
   }
 
   /**
@@ -451,5 +490,13 @@ public class SwerveSubsystem extends SubsystemBase
   public void addFakeVisionReading()
   {
     swerveDrive.addVisionMeasurement(new Pose2d(3, 3, Rotation2d.fromDegrees(65)), Timer.getFPGATimestamp());
+  }
+
+  public void setVisionMeasurementStdDevs(Matrix<N3, N1> visionMeasurementStdDevs ) {
+    swerveDrive.swerveDrivePoseEstimator.setVisionMeasurementStdDevs(visionMeasurementStdDevs);
+  }
+
+  public void addVisionMeasurement(Pose2d pose, double timestamp){
+    swerveDrive.addVisionMeasurement(pose, timestamp);
   }
 }

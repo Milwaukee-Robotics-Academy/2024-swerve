@@ -51,11 +51,11 @@ public final class Constants
 
   }
   public static class ShooterConstants {
-    public static final int kFlywheelMotorPort = 10;
-    public static final int kShooterMotorPort = 9;
+    public static final int kFlywheelMotorPort = 9;
+    public static final int kTriggerMotorPort = 10;
 
     public static final int kFlywheelLeftMotorPort = 11;
-    public static final int kShooterLeftMotorPort = 12;
+    public static final int kTriggerLeftMotorPort = 12;
   }
     public static class IntakeConstants {
     public static final int kLeftMotorPort = 13;
