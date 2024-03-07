@@ -96,7 +96,6 @@ public class RobotContainer
   {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
-
     driverXbox.start().onTrue((new InstantCommand(m_drivebase::zeroGyro)));
     driverXbox.a().whileTrue(new ParallelCommandGroup(
       new InstantCommand(()->shooter.shoot()).handleInterrupt(() -> shooter.stop()),
@@ -122,6 +121,7 @@ public class RobotContainer
 //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
   }
 
+  // Registers the commands shoot and intake in autonumous for use in path planner
   public void namedCommandsConfig()
   {
     NamedCommands.registerCommand("shoot", 
@@ -129,6 +129,16 @@ public class RobotContainer
         new InstantCommand(shooter::shoot),
         new WaitCommand(1),
         new InstantCommand(shooter::stop)
+      )
+    );
+    NamedCommands.registerCommand("intake", 
+      new SequentialCommandGroup(
+        new InstantCommand(intake::in)
+      )
+    );
+    NamedCommands.registerCommand("intakeStop",
+      new SequentialCommandGroup(
+        new InstantCommand(intake::stop)
       )
     );
   }
@@ -141,7 +151,7 @@ public class RobotContainer
   public Command getAutonomousCommand()
   {
     // An example command will be run in autonomous
-    return m_drivebase.getAutonomousCommand("PracticeAuto1", true);
+    return m_drivebase.getAutonomousCommand("tenfeetandbackp2", true);
   }
 
   public void setDriveMode()
