@@ -96,6 +96,7 @@ public double getBottomMotorSpeed() {
     m_flywheelLeft.set(.5);
   }
   
+
   public void setMotorSpeed(double topSpeed, double bottomSpeed) {
     m_flywheel.set(topSpeed);
     m_triggerMotor.set(bottomSpeed);

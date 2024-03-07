@@ -96,7 +96,6 @@ public class RobotContainer
   {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
-
     driverXbox.start().onTrue((new InstantCommand(m_drivebase::zeroGyro)));
     driverXbox.a().whileTrue(new ParallelCommandGroup(
       new InstantCommand(()->shooter.shoot()).handleInterrupt(() -> shooter.stop()),
