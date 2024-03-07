@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.playingwithfusion.TimeOfFlight;
+import com.playingwithfusion.TimeOfFlight.RangingMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -16,7 +18,11 @@ import frc.robot.Constants.ShooterConstants;
 public class Intake extends SubsystemBase {
    private CANSparkMax m_leftIntake = new CANSparkMax(IntakeConstants.kLeftMotorPort, MotorType.kBrushless);
     private CANSparkMax m_rightIntake = new CANSparkMax(IntakeConstants.kRightMotorPort, MotorType.kBrushless);
-    
+    /**
+     * Adding a Playing with Fusion Time of Flight sensor. this is configured via a webserver running off the Rob0Rio http://10.88.02.2:5812
+     * 
+     */
+  private TimeOfFlight intakeSensor = new TimeOfFlight(1);
   /** Creates a new Intake. */
   public Intake() {
 
@@ -28,6 +34,7 @@ public class Intake extends SubsystemBase {
        m_rightIntake.setSmartCurrentLimit(20);
        m_rightIntake.setIdleMode(IdleMode.kBrake);
        m_rightIntake.setInverted(true);
+       intakeSensor.setRangingMode(RangingMode.Short,24);
      
 
   }
@@ -45,6 +52,13 @@ public class Intake extends SubsystemBase {
   public void stop(){
     m_leftIntake.set(0);
     m_rightIntake.set(0);
+  }
+
+  public boolean hasNote(){
+    if ((int)intakeSensor.getRange() < 100){
+      return true;
+    }
+    return false;
   }
 
   @Override
