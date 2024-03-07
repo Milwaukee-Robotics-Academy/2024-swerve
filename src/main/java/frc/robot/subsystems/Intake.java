@@ -23,7 +23,7 @@ public class Intake extends SubsystemBase {
      * Adding a Playing with Fusion Time of Flight sensor. this is configured via a webserver running off the Rob0Rio http://10.88.02.2:5812
      * 
      */
-  private TimeOfFlight intakeSensor = new TimeOfFlight(1);
+  private TimeOfFlight intakeSensor = new TimeOfFlight(0);
   /** Creates a new Intake. */
   public Intake() {
 
