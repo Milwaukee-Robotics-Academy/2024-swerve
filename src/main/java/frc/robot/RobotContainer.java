@@ -123,7 +123,7 @@ public class RobotContainer
      driverXbox.y().whileTrue(new InstantCommand(()->intake.in()).handleInterrupt(() -> intake.stop()));
      driverXbox.y().onFalse(new InstantCommand(()->intake.stop()));
 
-     intakeHasNote.onTrue(new InstantCommand(()->intake.stop()));
+     intakeHasNote.onTrue(new WaitCommand(.3).andThen(new InstantCommand(()->intake.stop())));
 //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
   }
 
