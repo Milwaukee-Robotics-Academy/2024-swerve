@@ -11,19 +11,29 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Photonvision;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
 import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
+
+import com.pathplanner.lib.auto.NamedCommands;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -36,14 +46,15 @@ public class RobotContainer
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem m_drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve-practice"));
-
+  private final  Shooter shooter = new Shooter();          
+  private final Intake intake = new Intake();                                                      
   private final Photonvision m_photonvision = new Photonvision();                                                                      
   // CommandJoystick rotationController = new CommandJoystick(1);
   // Replace with CommandPS4Controller or CommandJoystick if needed
   CommandJoystick driverController = new CommandJoystick(1);
 
   // CommandJoystick driverController   = new CommandJoystick(3);//(OperatorConstants.DRIVER_CONTROLLER_PORT);
-  XboxController driverXbox = new XboxController(0);
+  CommandXboxController driverXbox = new CommandXboxController(0);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -85,9 +96,51 @@ public class RobotContainer
   {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
-    new JoystickButton(driverXbox, 1).onTrue((new InstantCommand(m_drivebase::zeroGyro)));
-    new JoystickButton(driverXbox, 3).onTrue(new InstantCommand(m_drivebase::addFakeVisionReading));
+    driverXbox.start().onTrue((new InstantCommand(m_drivebase::zeroGyro)));
+    driverXbox.a().whileTrue(new ParallelCommandGroup(
+      new InstantCommand(()->shooter.shoot()).handleInterrupt(() -> shooter.stop()),
+      new InstantCommand(()->intake.in()).handleInterrupt(() -> intake.stop()))
+    );
+    driverXbox.b().onTrue(new InstantCommand(()->shooter.stop()));
+
+    /** temporary intake */
+    driverXbox.leftBumper().whileTrue(
+      new InstantCommand(()->shooter.intake()).handleInterrupt(() -> shooter.stop())
+    );
+      //   driverXbox.leftBumper().onFalse(new InstantCommand(()->shooter.stop()));
+    //intake
+    driverXbox.x().whileTrue(new ParallelCommandGroup(
+      new InstantCommand(()->intake.in()).handleInterrupt(() -> intake.stop()),
+      new InstantCommand(()->shooter.intake()).handleInterrupt(() -> shooter.stop())
+    ));
+    driverXbox.x().onFalse(new ParallelCommandGroup(new InstantCommand(()->intake.stop()),
+     new InstantCommand(()->shooter.stop()).handleInterrupt(() -> shooter.stop())));
+     driverXbox.y().whileTrue(new InstantCommand(()->intake.in()).handleInterrupt(() -> intake.stop()));
+     driverXbox.y().onFalse(new InstantCommand(()->intake.stop()));
+
 //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
+  }
+
+  // Registers the commands shoot and intake in autonumous for use in path planner
+  public void namedCommandsConfig()
+  {
+    NamedCommands.registerCommand("shoot", 
+      new SequentialCommandGroup(
+        new InstantCommand(shooter::shoot),
+        new WaitCommand(1),
+        new InstantCommand(shooter::stop)
+      )
+    );
+    NamedCommands.registerCommand("intake", 
+      new SequentialCommandGroup(
+        new InstantCommand(intake::in)
+      )
+    );
+    NamedCommands.registerCommand("intakeStop",
+      new SequentialCommandGroup(
+        new InstantCommand(intake::stop)
+      )
+    );
   }
 
   /**
@@ -98,7 +151,7 @@ public class RobotContainer
   public Command getAutonomousCommand()
   {
     // An example command will be run in autonomous
-    return m_drivebase.getAutonomousCommand("New Path");
+    return m_drivebase.getAutonomousCommand("tenfeetandbackp2", true);
   }
 
   public void setDriveMode()
@@ -111,21 +164,32 @@ public class RobotContainer
     m_drivebase.setMotorBrake(brake);
   }
 
-  public void periodic(){
+  public void periodic()
+  {
+    if (m_photonvision.hasTargets())
+    {
+      Optional<EstimatedRobotPose> estimatedPose = m_photonvision.getEstimatedGlobalPose(m_drivebase.getPose());
+      if (estimatedPose.isPresent())
+      {
+        Pose2d robotPose2d = estimatedPose.get().estimatedPose.toPose2d();
+        double distance = m_photonvision.getBestTarget().getBestCameraToTarget().getTranslation().getNorm();
+      }
+    }
+    SmartDashboard.putData("HD_USB_Camera-output", m_photonvision);
+  // Check to see if photonvision can see Apriltag targets. if so, get an estimated robot pose based on target and update the odometry
+	// if (m_photonvision.hasTargets()) {
+	// 		Optional<EstimatedRobotPose> estimatedPose = m_photonvision.getEstimatedGlobalPose(m_drivebase.getPose());
+	// 		if (estimatedPose.isPresent()) {
+	// 			Pose2d robotPose2d = estimatedPose.get().estimatedPose.toPose2d();
+	// 			double distance = m_photonvision.getBestTarget().getBestCameraToTarget().getTranslation().getNorm();
 
-    // Check to see if photonvision can see Apriltag targets. if so, get an estimated robot pose based on target and update the odometry
-	if (m_photonvision.hasTargets()) {
-			Optional<EstimatedRobotPose> estimatedPose = m_photonvision.getEstimatedGlobalPose(m_drivebase.getPose());
-			if (estimatedPose.isPresent()) {
-				Pose2d robotPose2d = estimatedPose.get().estimatedPose.toPose2d();
-				double distance = m_photonvision.getBestTarget().getBestCameraToTarget().getTranslation().getNorm();
-
-				//Scale confidence in Vision Measurements based on distance
-			//	m_drivebase.setVisionMeasurementStdDevs(MatBuilder.fill(Nat.N3(), Nat.N1(), distance * 1.2, distance * 1.2, 0.01));//TODO: find and fix!
-        //Add VisionMeasurement to odometry
-				m_drivebase.addVisionMeasurement(new Pose2d(robotPose2d.getTranslation(), m_drivebase.getHeading()), estimatedPose.get().timestampSeconds);
-			}
-		}
+	// 			//Scale confidence in Vision Measurements based on distance
+	// 		//	m_drivebase.setVisionMeasurementStdDevs(MatBuilder.fill(Nat.N3(), Nat.N1(), distance * 1.2, distance * 1.2, 0.01));//TODO: find and fix!
+  //       //Add VisionMeasurement to odometry
+	// 			m_drivebase.addVisionMeasurement(new Pose2d(robotPose2d.getTranslation(), m_drivebase.getHeading()), estimatedPose.get().timestampSeconds);
+	// 		}
+	// 	}
+  // TODO uncomment this code
 
   }
 }
