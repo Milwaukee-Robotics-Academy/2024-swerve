@@ -80,6 +80,8 @@ public double getBottomMotorSpeed() {
   {
     m_triggerMotor.set(0.3);
      m_triggerMotorLeft.set(0.3);
+     m_flywheel.set(-.3);
+     m_flywheelLeft.set(-.3);
   }
 
   public void readyFlywheel()
