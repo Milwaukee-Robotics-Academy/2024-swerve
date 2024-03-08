@@ -24,7 +24,10 @@ public class Intake extends SubsystemBase {
      * 
      */
   private TimeOfFlight intakeSensor = new TimeOfFlight(0);
-  /** Creates a new Intake. */
+  /** Creates a new Intake. 
+   * TODO: Update for combined subsystems
+   * 
+  */
   public Intake() {
 
       m_leftIntake.restoreFactoryDefaults();
@@ -41,16 +44,25 @@ public class Intake extends SubsystemBase {
 
   }
 
+  /**
+   *  TODO: Update for combined subsystems
+   */
   public void in(){
     m_leftIntake.set(.75);
     m_rightIntake.set(.75);
   }
 
+    /**
+   *  TODO: Update for combined subsystems
+   */
   public void out(){
     m_leftIntake.set(-.5);
     m_rightIntake.set(-.5);
   }
 
+    /**
+   *  TODO: Update for combined subsystems
+   */
   public void stop(){
     m_leftIntake.set(0);
     m_rightIntake.set(0);
