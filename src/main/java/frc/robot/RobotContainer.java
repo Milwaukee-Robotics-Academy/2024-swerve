@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Photonvision;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -46,8 +45,7 @@ public class RobotContainer
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem m_drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve"));
-  private final  Shooter shooter = new Shooter();          
-  private final Intake intake = new Intake();                                                      
+  private final  Shooter shooter = new Shooter();                                                              
     // CommandJoystick rotationController = new CommandJoystick(1);
 
   private final Photonvision m_photonvision = new Photonvision();                                                                      
@@ -59,7 +57,7 @@ public class RobotContainer
   // CommandJoystick driverController   = new CommandJoystick(3);//(OperatorConstants.DRIVER_CONTROLLER_PORT);
   CommandXboxController driverXbox = new CommandXboxController(0);
 
-  Trigger intakeHasNote = new Trigger(intake::hasNote);
+
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -104,26 +102,26 @@ public class RobotContainer
     driverXbox.start().onTrue((new InstantCommand(m_drivebase::zeroGyro)));
     driverXbox.a().whileTrue(new ParallelCommandGroup(
       new InstantCommand(()->shooter.shoot()).handleInterrupt(() -> shooter.stop()),
-      new InstantCommand(()->intake.in()).handleInterrupt(() -> intake.stop()))
+      new InstantCommand(()->shooter.startIntake()).handleInterrupt(() -> shooter.stop()))
     );
     driverXbox.b().onTrue(new InstantCommand(()->shooter.stop()));
 
     /** temporary intake */
     driverXbox.leftBumper().whileTrue(
-      new InstantCommand(()->shooter.intake()).handleInterrupt(() -> shooter.stop())
+      new InstantCommand(()->shooter.startIntake()).handleInterrupt(() -> shooter.stop())
     );
       //   driverXbox.leftBumper().onFalse(new InstantCommand(()->shooter.stop()));
     //intake
     driverXbox.x().whileTrue(new ParallelCommandGroup(
-      new InstantCommand(()->intake.in()).handleInterrupt(() -> intake.stop()),
-      new InstantCommand(()->shooter.intake()).handleInterrupt(() -> shooter.stop())
+      new InstantCommand(()->shooter.startIntake()).handleInterrupt(() -> shooter.stop()),
+      new InstantCommand(()->shooter.startIntake()).handleInterrupt(() -> shooter.stop())
     ));
-    driverXbox.x().onFalse(new ParallelCommandGroup(new InstantCommand(()->intake.stop()),
+    driverXbox.x().onFalse(new ParallelCommandGroup(new InstantCommand(()->shooter.stop()),
      new InstantCommand(()->shooter.stop()).handleInterrupt(() -> shooter.stop())));
-     driverXbox.y().whileTrue(new InstantCommand(()->intake.in()).handleInterrupt(() -> intake.stop()));
-     driverXbox.y().onFalse(new InstantCommand(()->intake.stop()));
+     driverXbox.y().whileTrue(new InstantCommand(()->shooter.startIntake()).handleInterrupt(() -> shooter.stop()));
+     driverXbox.y().onFalse(new InstantCommand(()->shooter.stop()));
 
-     intakeHasNote.onTrue(new WaitCommand(.3).andThen(new InstantCommand(()->intake.stop())));
+    // intakeHasNote.onTrue(new WaitCommand(.3).andThen(new InstantCommand(()->shooter.stop())));
 //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
   }
 
@@ -139,12 +137,12 @@ public class RobotContainer
     );
     NamedCommands.registerCommand("intake", 
       new SequentialCommandGroup(
-        new InstantCommand(intake::in)
+        new InstantCommand(shooter::startIntake)
       )
     );
     NamedCommands.registerCommand("intakeStop",
       new SequentialCommandGroup(
-        new InstantCommand(intake::stop)
+        new InstantCommand(shooter::stop)
       )
     );
   }
