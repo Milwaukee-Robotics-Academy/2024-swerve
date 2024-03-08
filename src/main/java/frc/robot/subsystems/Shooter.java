@@ -40,6 +40,7 @@ public class Shooter extends SubsystemBase {
     * 
     */
   private TimeOfFlight intakeSensor = new TimeOfFlight(0);
+  private TimeOfFlight shooterSensor = new TimeOfFlight(0);
 
   public Shooter() {
     m_flywheel.restoreFactoryDefaults();
@@ -68,7 +69,9 @@ public class Shooter extends SubsystemBase {
     m_lowerIntake.setIdleMode(IdleMode.kCoast);
     m_lowerIntake.setInverted(true);
     intakeSensor.setRangingMode(RangingMode.Short, 24);
+    shooterSensor.setRangingMode(RangingMode.Short, 24);
     SmartDashboard.putNumber("IntakeSensor", intakeSensorDistance());
+    SmartDashboard.putNumber("ShooterSensor", shooterSensorDistance());
 
     this.stop();
   }
@@ -118,7 +121,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean hasNote(){
-    if ((int)intakeSensor.getRange() < 100){
+    if ((int)intakeSensor.getRange() < 300 && (int)shooterSensor.getRange() > 100){
       return true;
     }
     return false;
@@ -127,6 +130,11 @@ public class Shooter extends SubsystemBase {
   public int intakeSensorDistance(){
     return (int)intakeSensor.getRange();
   }
+
+   public int shooterSensorDistance(){
+    return (int)shooterSensor.getRange();
+  }
+
 
   /** The log method puts interesting information to the SmartDashboard. */
   public void log() {
@@ -138,5 +146,6 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
     log();
     SmartDashboard.putNumber("IntakeSensor",intakeSensorDistance());
+      SmartDashboard.putNumber("ShooterSensor",shooterSensorDistance());
   }
 }
