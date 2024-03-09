@@ -39,8 +39,8 @@ public class Shooter extends SubsystemBase {
     * Adding a Playing with Fusion Time of Flight sensor. this is configured via a webserver running off the Rob0Rio http://10.88.02.2:5812
     * 
     */
-  private TimeOfFlight intakeSensor = new TimeOfFlight(0);
-  private TimeOfFlight shooterSensor = new TimeOfFlight(0);
+  private TimeOfFlight intakeSensor = new TimeOfFlight(1);
+  private TimeOfFlight shooterSensor = new TimeOfFlight(2);
 
   public Shooter() {
     m_flywheel.restoreFactoryDefaults();
