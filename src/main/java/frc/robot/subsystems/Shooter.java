@@ -6,115 +6,146 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.playingwithfusion.TimeOfFlight;
+import com.playingwithfusion.TimeOfFlight.RangingMode;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
- * The elevator subsystem uses PID to go to a given height. Unfortunately, in it's current state PID
- * values for simulation are different than in the real world do to minor differences.
+ * The elevator subsystem uses PID to go to a given height. Unfortunately, in
+ * it's current state PID
+ * values for simulation are different than in the real world do to minor
+ * differences.
  */
-public class Shooter extends SubsystemBase 
-{
-    private CANSparkMax m_flywheel = new CANSparkMax(ShooterConstants.kFlywheelMotorPort, MotorType.kBrushless);
-    private RelativeEncoder m_flywheelEncoder = m_flywheel.getEncoder();
-    private CANSparkMax m_triggerMotor = new CANSparkMax(ShooterConstants.kTriggerMotorPort, MotorType.kBrushless);
-    private RelativeEncoder m_triggerEncoder = m_flywheel.getEncoder();
-    private CANSparkMax m_flywheelLeft = new CANSparkMax(ShooterConstants.kFlywheelLeftMotorPort, MotorType.kBrushless);
-     private RelativeEncoder m_flywheelEncoderLeft = m_flywheel.getEncoder();
-      private CANSparkMax m_triggerMotorLeft = new CANSparkMax(ShooterConstants.kTriggerLeftMotorPort, MotorType.kBrushless);
-      private RelativeEncoder m_triggerEncoderLeft = m_flywheel.getEncoder();
-    public Shooter()
-    {
-      m_flywheel.restoreFactoryDefaults();
-      m_flywheel.setSmartCurrentLimit(80);
-      m_flywheel.setIdleMode(IdleMode.kBrake);
-      m_flywheel.setInverted(false);
-      m_flywheelLeft.restoreFactoryDefaults();
-       m_flywheelLeft.setSmartCurrentLimit(80);
-       m_flywheelLeft.setIdleMode(IdleMode.kBrake);
-       m_flywheelLeft.setInverted(true);
-      m_triggerMotor.restoreFactoryDefaults();
-      m_triggerMotor.setSmartCurrentLimit(80);
-      m_triggerMotor.setIdleMode(IdleMode.kBrake);
-      m_triggerMotor.setInverted(false);
-        m_triggerMotorLeft.restoreFactoryDefaults();
-        m_triggerMotorLeft.setSmartCurrentLimit(80);
-        m_triggerMotorLeft.setIdleMode(IdleMode.kBrake);
-        m_triggerMotorLeft.setInverted(true);
-      SmartDashboard.putNumber("FW-Encoder/speed",m_flywheelEncoder.getVelocity());
-      SmartDashboard.putNumber("FW-Encoder/distance",m_flywheelEncoder.getPosition());
-      SmartDashboard.putNumber("Trigger-Encoder/speed",m_flywheelEncoder.getVelocity());
-      SmartDashboard.putNumber("Trigger-Encoder/distance",m_flywheelEncoder.getPosition());
+public class Shooter extends SubsystemBase {
+  private CANSparkMax m_flywheel = new CANSparkMax(ShooterConstants.kFlywheelMotorPort, MotorType.kBrushless);
+  private CANSparkMax m_triggerMotor = new CANSparkMax(ShooterConstants.kTriggerMotorPort, MotorType.kBrushless);
+  private CANSparkMax m_flywheelLeft = new CANSparkMax(ShooterConstants.kFlywheelLeftMotorPort, MotorType.kBrushless);
+  private CANSparkMax m_triggerMotorLeft = new CANSparkMax(ShooterConstants.kTriggerLeftMotorPort,
+      MotorType.kBrushless);
 
 
-      this.stop();
-    }
+  /**
+   * Motors for the intake
+   */
+  private CANSparkMax m_upperIntake = new CANSparkMax(IntakeConstants.kLeftMotorPort, MotorType.kBrushless);
+  private CANSparkMax m_lowerIntake = new CANSparkMax(IntakeConstants.kRightMotorPort, MotorType.kBrushless);
+  /**
+    * Adding a Playing with Fusion Time of Flight sensor. this is configured via a webserver running off the Rob0Rio http://10.88.02.2:5812
+    * 
+    */
+  private TimeOfFlight intakeSensor = new TimeOfFlight(0);
+  private TimeOfFlight shooterSensor = new TimeOfFlight(0);
 
-  public void set(Double speed)
-  {
+  public Shooter() {
+    m_flywheel.restoreFactoryDefaults();
+    m_flywheel.setSmartCurrentLimit(80);
+    m_flywheel.setIdleMode(IdleMode.kBrake);
+    m_flywheel.setInverted(false);
+    m_flywheelLeft.restoreFactoryDefaults();
+    m_flywheelLeft.setSmartCurrentLimit(80);
+    m_flywheelLeft.setIdleMode(IdleMode.kBrake);
+    m_flywheelLeft.setInverted(true);
+    m_triggerMotor.restoreFactoryDefaults();
+    m_triggerMotor.setSmartCurrentLimit(80);
+    m_triggerMotor.setIdleMode(IdleMode.kBrake);
+    m_triggerMotor.setInverted(false);
+    m_triggerMotorLeft.restoreFactoryDefaults();
+    m_triggerMotorLeft.setSmartCurrentLimit(80);
+    m_triggerMotorLeft.setIdleMode(IdleMode.kBrake);
+    m_triggerMotorLeft.setInverted(true);
+
+    m_upperIntake.restoreFactoryDefaults();
+    m_upperIntake.setSmartCurrentLimit(20);
+    m_upperIntake.setIdleMode(IdleMode.kCoast);
+    m_upperIntake.setInverted(true);
+    m_lowerIntake.restoreFactoryDefaults();
+    m_lowerIntake.setSmartCurrentLimit(20);
+    m_lowerIntake.setIdleMode(IdleMode.kCoast);
+    m_lowerIntake.setInverted(true);
+    intakeSensor.setRangingMode(RangingMode.Short, 24);
+    shooterSensor.setRangingMode(RangingMode.Short, 24);
+    SmartDashboard.putNumber("IntakeSensor", intakeSensorDistance());
+    SmartDashboard.putNumber("ShooterSensor", shooterSensorDistance());
+
+    this.stop();
+  }
+
+  public void set(Double speed) {
     m_triggerMotor.set(speed);
     m_flywheel.set(speed);
   }
-  public double getTopMotorSpeed() {
-    return m_flywheel.getEncoder().getVelocity();
-}
 
-public double getBottomMotorSpeed() {
-    return m_triggerMotor.getEncoder().getVelocity();
-}
-
-  public void stop()
-  {
+  public void stop() {
     m_triggerMotor.set(0);
     m_flywheel.set(0);
-       m_triggerMotorLeft.set(0);
-     m_flywheelLeft.set(0);
+    m_triggerMotorLeft.set(0);
+    m_flywheelLeft.set(0);
   }
 
-
-  public void intake()
-  {
-    m_triggerMotor.set(0.3);
-     m_triggerMotorLeft.set(0.3);
+  public void startIntake() {
+    m_triggerMotor.set(-0.3);
+    m_triggerMotorLeft.set(-0.3);
+    m_upperIntake.set(.75);
+    m_lowerIntake.set(.75);
   }
 
-  public void readyFlywheel()
-  {
-    m_flywheel.set(1);
-     m_flywheelLeft.set(1);
+  public void readyForShot() {
+    m_upperIntake.set(0.0);
+    m_lowerIntake.set(0.0);
+    m_triggerMotor.set(0.0);
+    m_triggerMotorLeft.set(0.0);
+    m_flywheel.set(.4);
+    m_flywheelLeft.set(.4);
   }
 
-  public void shoot()
-  {
+  public void bringNoteBackDown(){
+    m_upperIntake.set(0.3);
+    m_lowerIntake.set(0.75);
+    m_triggerMotor.set(-0.4);
+    m_triggerMotorLeft.set(-0.4);
+    m_flywheel.set(.0);
+    m_flywheelLeft.set(.0);
+  }
+
+  public void shoot() {
     m_triggerMotor.set(1);
     m_triggerMotorLeft.set(1);
     m_flywheel.set(.5);
     m_flywheelLeft.set(.5);
   }
-  
-  public void setMotorSpeed(double topSpeed, double bottomSpeed) {
-    m_flywheel.set(topSpeed);
-    m_triggerMotor.set(bottomSpeed);
-    m_flywheelLeft.set(topSpeed);
-    m_triggerMotorLeft.set(bottomSpeed);
-}
-  /** The log method puts interesting information to the SmartDashboard. */
-  public void log() 
-  {
-  //  SmartDashboard.putData("Shooter Speed", m_pot);
+
+  public boolean hasNote(){
+    if ((int)intakeSensor.getRange() < 300 && (int)shooterSensor.getRange() > 100){
+      return true;
+    }
+    return false;
+  }
+
+  public int intakeSensorDistance(){
+    return (int)intakeSensor.getRange();
+  }
+
+   public int shooterSensorDistance(){
+    return (int)shooterSensor.getRange();
   }
 
 
+  /** The log method puts interesting information to the SmartDashboard. */
+  public void log() {
+    // SmartDashboard.putData("Shooter Speed", m_pot);
+  }
+
   /** Call log method every loop. */
   @Override
-  public void periodic() 
-  {
+  public void periodic() {
     log();
-    SmartDashboard.putNumber("FlywheelMotorSpeed", getTopMotorSpeed());
-    SmartDashboard.putNumber("TriggerMotorSpeed", getBottomMotorSpeed());
+    SmartDashboard.putNumber("IntakeSensor",intakeSensorDistance());
+      SmartDashboard.putNumber("ShooterSensor",shooterSensorDistance());
   }
 }
