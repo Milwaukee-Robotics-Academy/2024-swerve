@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.0008437905963476,
-      "y": 6.652614092348042
+      "x": 1.1952931028369176,
+      "y": 5.5430292057165325
     },
-    "rotation": -139.96974072811025
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
@@ -26,7 +26,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "PracticePath1Pos1"
+            "pathName": "MiddleStep1"
           }
         },
         {
@@ -44,7 +44,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "PracticePath2Pos1"
+            "pathName": "MiddleStep2"
           }
         },
         {
