@@ -57,7 +57,7 @@ public class RobotContainer
   // CommandJoystick driverController   = new CommandJoystick(3);//(OperatorConstants.DRIVER_CONTROLLER_PORT);
   CommandXboxController driverXbox = new CommandXboxController(0);
 
-
+  Trigger intakeHasNote = new Trigger(intake::hasNote);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -121,7 +121,7 @@ public class RobotContainer
      driverXbox.y().whileTrue(new InstantCommand(()->shooter.startIntake()).handleInterrupt(() -> shooter.stop()));
      driverXbox.y().onFalse(new InstantCommand(()->shooter.stop()));
 
-    // intakeHasNote.onTrue(new WaitCommand(.3).andThen(new InstantCommand(()->shooter.stop())));
+     intakeHasNote.onTrue(new WaitCommand(.3).andThen(new InstantCommand(()->intake.stop())));
 //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
   }
 
