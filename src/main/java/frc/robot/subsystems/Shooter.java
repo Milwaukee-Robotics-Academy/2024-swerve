@@ -40,7 +40,7 @@ public class Shooter extends SubsystemBase {
     * 
     */
   private TimeOfFlight intakeSensor = new TimeOfFlight(1);
-  private TimeOfFlight shooterSensor = new TimeOfFlight(2);
+  private TimeOfFlight shooterSensor = new TimeOfFlight(0);
 
   public Shooter() {
     m_flywheel.restoreFactoryDefaults();
