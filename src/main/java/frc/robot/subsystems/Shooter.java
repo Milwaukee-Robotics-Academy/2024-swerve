@@ -70,6 +70,7 @@ public class Shooter extends SubsystemBase {
     m_lowerIntake.setInverted(true);
     intakeSensor.setRangingMode(RangingMode.Short, 24);
     shooterSensor.setRangingMode(RangingMode.Short, 24);
+    //shooterSensor.setRangeOfInterest(-7,-2, -8,2);
     SmartDashboard.putNumber("IntakeSensor", intakeSensorDistance());
     SmartDashboard.putNumber("ShooterSensor", shooterSensorDistance());
 
