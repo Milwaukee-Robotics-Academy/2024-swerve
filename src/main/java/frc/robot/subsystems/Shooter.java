@@ -100,13 +100,11 @@ public class Shooter extends SubsystemBase {
     m_flywheelLeft.set(-.1);
   }
 
-  public void readyForShot() {
-    m_upperIntake.set(0.0);
-    m_lowerIntake.set(0.0);
-    m_triggerMotor.set(0.0);
-    m_triggerMotorLeft.set(0.0);
-    m_flywheel.set(.4);
-    m_flywheelLeft.set(.4);
+  public boolean readyForShot() {
+    if ((int)intakeSensor.getRange() < 300 && (int)shooterSensor.getRange() < 200){
+      return true;
+    }
+    return false;
   }
 
   public boolean intaking(){
@@ -121,8 +119,8 @@ public class Shooter extends SubsystemBase {
   public void bringNoteBackDown(){
     m_upperIntake.set(0.3);
     m_lowerIntake.set(0.75);
-    m_triggerMotor.set(-0.4);
-    m_triggerMotorLeft.set(-0.4);
+    m_triggerMotor.set(-0.2);
+    m_triggerMotorLeft.set(-0.2);
     m_flywheel.set(.0);
     m_flywheelLeft.set(.0);
   }

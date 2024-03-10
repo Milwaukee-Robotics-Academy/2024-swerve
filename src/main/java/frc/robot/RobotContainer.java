@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Intake;
+import frc.robot.commands.PosistionForShot;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Photonvision;
@@ -109,7 +110,7 @@ public class RobotContainer
 
       //   driverXbox.leftBumper().onFalse(new InstantCommand(()->shooter.stop()));
     //intake
-    driverXbox.x().onTrue(new Intake(shooter));
+    driverXbox.x().onTrue(new Intake(shooter).andThen(new PosistionForShot(shooter)));
     //driverXbox.x().onFalse(new ParallelCommandGroup(new InstantCommand(()->shooter.stop()),
     // new InstantCommand(()->shooter.stop()).handleInterrupt(() -> shooter.stop())));
 
