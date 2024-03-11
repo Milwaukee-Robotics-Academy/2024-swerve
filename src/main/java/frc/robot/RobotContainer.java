@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -33,6 +34,7 @@ import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 /**
@@ -56,6 +58,9 @@ public class RobotContainer
   // CommandJoystick driverController   = new CommandJoystick(3);//(OperatorConstants.DRIVER_CONTROLLER_PORT);
   CommandXboxController driverXbox = new CommandXboxController(0);
 
+  private final SendableChooser<Command> autoChooser;
+
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -64,7 +69,8 @@ public class RobotContainer
     // Configure the trigger bindings
     configureBindings();
 
-
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData(autoChooser);
     // Applies deadbands and inverts controls because joysticks
     // are back-right positive while robot
     // controls are front-left positive
@@ -151,7 +157,8 @@ public class RobotContainer
   public Command getAutonomousCommand()
   {
     // An example command will be run in autonomous
-    return m_drivebase.getAutonomousCommand("tenfeetandbackp2", true);
+    //return m_drivebase.getAutonomousCommand("tenfeetandbackp2", true);
+    return autoChooser.getSelected();
   }
 
   public void setDriveMode()
