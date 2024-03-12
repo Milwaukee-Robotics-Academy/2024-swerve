@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -24,8 +23,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Intake;
-import frc.robot.commands.PosistionForShot;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Photonvision;
@@ -51,7 +48,7 @@ public class RobotContainer
   private final  Shooter shooter = new Shooter();                                                              
     // CommandJoystick rotationController = new CommandJoystick(1);
 
- // private final Photonvision m_photonvision = new Photonvision();                                                                      
+  private final Photonvision m_photonvision = new Photonvision();                                                                      
   // CommandJoystick rotationController = new CommandJoystick(1);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -60,7 +57,7 @@ public class RobotContainer
   // CommandJoystick driverController   = new CommandJoystick(3);//(OperatorConstants.DRIVER_CONTROLLER_PORT);
   CommandXboxController driverXbox = new CommandXboxController(0);
 
- // Trigger intakeHasNote = new Trigger(shooter::hasNote);
+  Trigger intakeHasNote = new Trigger(intake::hasNote);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -90,7 +87,6 @@ public class RobotContainer
 
     m_drivebase.setDefaultCommand(
         !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
-    shooter.setDefaultCommand(new RunCommand(()-> shooter.stop(), shooter));
   }
 
   /**
@@ -104,19 +100,28 @@ public class RobotContainer
   {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     driverXbox.start().onTrue((new InstantCommand(m_drivebase::zeroGyro)));
-    driverXbox.a().whileTrue(new RunCommand(()->shooter.shoot()).handleInterrupt(() -> shooter.stop()));
+    driverXbox.a().whileTrue(new ParallelCommandGroup(
+      new InstantCommand(()->shooter.shoot()).handleInterrupt(() -> shooter.stop()),
+      new InstantCommand(()->shooter.startIntake()).handleInterrupt(() -> shooter.stop()))
+    );
     driverXbox.b().onTrue(new InstantCommand(()->shooter.stop()));
 
-
+    /** temporary intake */
+    driverXbox.leftBumper().whileTrue(
+      new InstantCommand(()->shooter.startIntake()).handleInterrupt(() -> shooter.stop())
+    );
       //   driverXbox.leftBumper().onFalse(new InstantCommand(()->shooter.stop()));
     //intake
-    driverXbox.x().onTrue(new Intake(shooter).andThen(new PosistionForShot(shooter)));
-    //driverXbox.x().onFalse(new ParallelCommandGroup(new InstantCommand(()->shooter.stop()),
-    // new InstantCommand(()->shooter.stop()).handleInterrupt(() -> shooter.stop())));
+    driverXbox.x().whileTrue(new ParallelCommandGroup(
+      new InstantCommand(()->shooter.startIntake()).handleInterrupt(() -> shooter.stop()),
+      new InstantCommand(()->shooter.startIntake()).handleInterrupt(() -> shooter.stop())
+    ));
+    driverXbox.x().onFalse(new ParallelCommandGroup(new InstantCommand(()->shooter.stop()),
+     new InstantCommand(()->shooter.stop()).handleInterrupt(() -> shooter.stop())));
+     driverXbox.y().whileTrue(new InstantCommand(()->shooter.startIntake()).handleInterrupt(() -> shooter.stop()));
+     driverXbox.y().onFalse(new InstantCommand(()->shooter.stop()));
 
-
-
-//     intakeHasNote.onTrue(new WaitCommand(.3).andThen(new InstantCommand(()->intake.stop())));
+     intakeHasNote.onTrue(new WaitCommand(.3).andThen(new InstantCommand(()->intake.stop())));
 //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
   }
 
@@ -165,16 +170,16 @@ public class RobotContainer
 
   public void periodic()
   {
-    // if (m_photonvision.hasTargets())
-    // {
-    //   Optional<EstimatedRobotPose> estimatedPose = m_photonvision.getEstimatedGlobalPose(m_drivebase.getPose());
-    //   if (estimatedPose.isPresent())
-    //   {
-    //     Pose2d robotPose2d = estimatedPose.get().estimatedPose.toPose2d();
-    //     double distance = m_photonvision.getBestTarget().getBestCameraToTarget().getTranslation().getNorm();
-    //   }
-    // }
-    // SmartDashboard.putData("HD_USB_Camera-output", m_photonvision);
+    if (m_photonvision.hasTargets())
+    {
+      Optional<EstimatedRobotPose> estimatedPose = m_photonvision.getEstimatedGlobalPose(m_drivebase.getPose());
+      if (estimatedPose.isPresent())
+      {
+        Pose2d robotPose2d = estimatedPose.get().estimatedPose.toPose2d();
+        double distance = m_photonvision.getBestTarget().getBestCameraToTarget().getTranslation().getNorm();
+      }
+    }
+    SmartDashboard.putData("HD_USB_Camera-output", m_photonvision);
   // Check to see if photonvision can see Apriltag targets. if so, get an estimated robot pose based on target and update the odometry
 	// if (m_photonvision.hasTargets()) {
 	// 		Optional<EstimatedRobotPose> estimatedPose = m_photonvision.getEstimatedGlobalPose(m_drivebase.getPose());
