@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -35,6 +36,7 @@ import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 /**
@@ -58,7 +60,9 @@ public class RobotContainer
   CommandJoystick driverController = new CommandJoystick(1);
 
   // CommandJoystick driverController   = new CommandJoystick(3);//(OperatorConstants.DRIVER_CONTROLLER_PORT);
-  CommandXboxController driverXbox = new CommandXboxController(0);
+  CommandXboxController operatorController = new CommandXboxController(0);
+
+    private final SendableChooser<Command> autoChooser;
 
  // Trigger intakeHasNote = new Trigger(shooter::hasNote);
 
@@ -67,6 +71,8 @@ public class RobotContainer
    */
   public RobotContainer()
   {
+        autoChooser = AutoBuilder.buildAutoChooser();
+        SmartDashboard.putData("Auto Chooser", autoChooser);
     // Configure the trigger bindings
     configureBindings();
 
@@ -78,15 +84,15 @@ public class RobotContainer
     // left stick controls translation
     // right stick controls the desired angle NOT angular rotation
     Command driveFieldOrientedDirectAngle = m_drivebase.driveCommand(
-        () -> MathUtil.applyDeadband(-driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
-        () -> MathUtil.applyDeadband(-driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> -driverXbox.getRightX(),
-        () -> -driverXbox.getRightY());
+        () -> MathUtil.applyDeadband(-operatorController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(-operatorController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+        () -> -operatorController.getRightX(),
+        () -> -operatorController.getRightY());
 
     Command driveFieldOrientedDirectAngleSim = m_drivebase.simDriveCommand(
-        () -> MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
-        () -> MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> driverXbox.getRawAxis(2));
+        () -> MathUtil.applyDeadband(operatorController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(operatorController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+        () -> operatorController.getRawAxis(2));
 
     m_drivebase.setDefaultCommand(
         !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
@@ -103,14 +109,14 @@ public class RobotContainer
   private void configureBindings()
   {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    driverXbox.start().onTrue((new InstantCommand(m_drivebase::zeroGyro)));
-    driverXbox.a().whileTrue(new RunCommand(()->shooter.shoot()).handleInterrupt(() -> shooter.stop()));
-    driverXbox.b().onTrue(new InstantCommand(()->shooter.stop()));
+    operatorController.start().onTrue((new InstantCommand(m_drivebase::zeroGyro)));
+    operatorController.a().whileTrue(new RunCommand(()->shooter.shoot()).handleInterrupt(() -> shooter.stop()));
+    operatorController.b().onTrue(new InstantCommand(()->shooter.stop()));
 
 
       //   driverXbox.leftBumper().onFalse(new InstantCommand(()->shooter.stop()));
     //intake
-    driverXbox.x().onTrue(new Intake(shooter).andThen(new PosistionForShot(shooter)));
+    operatorController.x().onTrue(new Intake(shooter).andThen(new PosistionForShot(shooter)));
     //driverXbox.x().onFalse(new ParallelCommandGroup(new InstantCommand(()->shooter.stop()),
     // new InstantCommand(()->shooter.stop()).handleInterrupt(() -> shooter.stop())));
 
@@ -150,7 +156,7 @@ public class RobotContainer
   public Command getAutonomousCommand()
   {
     // An example command will be run in autonomous
-    return m_drivebase.getAutonomousCommand("Top", true);
+    return autoChooser.getSelected();
   }
 
   public void setDriveMode()
