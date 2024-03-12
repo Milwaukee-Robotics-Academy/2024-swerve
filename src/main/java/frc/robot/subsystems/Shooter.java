@@ -126,10 +126,10 @@ public class Shooter extends SubsystemBase {
   }
 
   public void shoot() {
-    m_triggerMotor.set(1);
-    m_triggerMotorLeft.set(1);
-    m_flywheel.set(.5);
-    m_flywheelLeft.set(.5);
+    m_triggerMotor.set(.5);
+    m_triggerMotorLeft.set(.5);
+    m_flywheel.set(1);
+    m_flywheelLeft.set(1);
   }
 
   public boolean hasNote(){
