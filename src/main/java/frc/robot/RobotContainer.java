@@ -4,38 +4,25 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.Nat;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Intake;
 import frc.robot.commands.PosistionForShot;
-import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Photonvision;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
-import java.util.Optional;
-
-import org.photonvision.EstimatedRobotPose;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -57,7 +44,7 @@ public class RobotContainer
   // CommandJoystick rotationController = new CommandJoystick(1);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  CommandJoystick driverController = new CommandJoystick(1);
+  CommandXboxController driverController = new CommandXboxController(1);
 
   // CommandJoystick driverController   = new CommandJoystick(3);//(OperatorConstants.DRIVER_CONTROLLER_PORT);
   CommandXboxController operatorController = new CommandXboxController(0);
@@ -84,15 +71,15 @@ public class RobotContainer
     // left stick controls translation
     // right stick controls the desired angle NOT angular rotation
     Command driveFieldOrientedDirectAngle = m_drivebase.driveCommand(
-        () -> MathUtil.applyDeadband(-operatorController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
-        () -> MathUtil.applyDeadband(-operatorController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> -operatorController.getRightX(),
-        () -> -operatorController.getRightY());
+        () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+        () -> -driverController.getRightX(),
+        () -> -driverController.getRightY());
 
     Command driveFieldOrientedDirectAngleSim = m_drivebase.simDriveCommand(
-        () -> MathUtil.applyDeadband(operatorController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
-        () -> MathUtil.applyDeadband(operatorController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> operatorController.getRawAxis(2));
+        () -> MathUtil.applyDeadband(driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+        () -> driverController.getRawAxis(2));
 
     m_drivebase.setDefaultCommand(
         !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
@@ -116,7 +103,12 @@ public class RobotContainer
 
       //   driverXbox.leftBumper().onFalse(new InstantCommand(()->shooter.stop()));
     //intake
-    operatorController.x().onTrue(new Intake(shooter).andThen(new PosistionForShot(shooter)));
+    operatorController.x().onTrue(new Intake(shooter)
+      .andThen(new PosistionForShot(shooter))
+      .andThen(new RunCommand(() -> driverController.getHID().setRumble(RumbleType.kBothRumble,1)))
+      .withTimeout(1)
+      .andThen(new RunCommand(() -> driverController.getHID().setRumble(RumbleType.kBothRumble,0)))
+      );
     //driverXbox.x().onFalse(new ParallelCommandGroup(new InstantCommand(()->shooter.stop()),
     // new InstantCommand(()->shooter.stop()).handleInterrupt(() -> shooter.stop())));
 
