@@ -16,12 +16,6 @@
           "data": {
             "pathName": "TurnTest"
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "zeroGyro"
-          }
         }
       ]
     }
