@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Intake;
-import frc.robot.commands.PosistionForShot;
+import frc.robot.commands.PositionForShot;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
@@ -104,10 +104,10 @@ public class RobotContainer
       //   driverXbox.leftBumper().onFalse(new InstantCommand(()->shooter.stop()));
     //intake
     operatorController.x().onTrue(new Intake(shooter)
-      .andThen(new PosistionForShot(shooter))
-      .andThen(new RunCommand(() -> driverController.getHID().setRumble(RumbleType.kBothRumble,1)))
-      .withTimeout(1)
-      .andThen(new RunCommand(() -> driverController.getHID().setRumble(RumbleType.kBothRumble,0)))
+      .andThen(new PositionForShot(shooter))
+      .andThen(new InstantCommand(() -> driverController.getHID().setRumble(RumbleType.kBothRumble,1)))
+      .andThen(new WaitCommand(1))
+      .andThen(new InstantCommand(() -> driverController.getHID().setRumble(RumbleType.kBothRumble,0)))
       );
     //driverXbox.x().onFalse(new ParallelCommandGroup(new InstantCommand(()->shooter.stop()),
     // new InstantCommand(()->shooter.stop()).handleInterrupt(() -> shooter.stop())));
