@@ -32,6 +32,7 @@ import java.io.File;
 import java.util.function.DoubleSupplier;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
+import swervelib.SwerveModule;
 import swervelib.math.SwerveMath;
 import swervelib.parser.SwerveControllerConfiguration;
 import swervelib.parser.SwerveDriveConfiguration;
@@ -88,7 +89,14 @@ public class SwerveSubsystem extends SubsystemBase
       throw new RuntimeException(e);
     }
     swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
-
+   
+    /**
+     * Attempt to correct for front right not angling to command
+     * https://www.chiefdelphi.com/t/yet-another-generic-swerve-library-yagsl-v1-release/450844/597
+     */
+    // for (SwerveModule mod :swerveDrive.getModules()){
+    //  mod.setAntiJitter(false);
+    // }
     setupPathPlanner();
 
 
