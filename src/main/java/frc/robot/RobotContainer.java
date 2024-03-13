@@ -36,7 +36,7 @@ public class RobotContainer
 
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem m_drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
-                                                                         "swerve"));
+                                                                         "swerve-practice")); // "swerve" if on robot 5. "swerve-practice" if on red-bot
   private final  Shooter shooter = new Shooter();                                                              
     // CommandJoystick rotationController = new CommandJoystick(1);
 
@@ -44,10 +44,10 @@ public class RobotContainer
   // CommandJoystick rotationController = new CommandJoystick(1);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  CommandXboxController driverController = new CommandXboxController(1);
+  CommandXboxController driverController = new CommandXboxController(0);
 
   // CommandJoystick driverController   = new CommandJoystick(3);//(OperatorConstants.DRIVER_CONTROLLER_PORT);
-  CommandXboxController operatorController = new CommandXboxController(0);
+  CommandXboxController operatorController = new CommandXboxController(1);
 
     private final SendableChooser<Command> autoChooser;
 
@@ -96,7 +96,8 @@ public class RobotContainer
   private void configureBindings()
   {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    operatorController.start().onTrue((new InstantCommand(m_drivebase::zeroGyro)));
+    operatorController.start().onTrue((new InstantCommand(m_drivebase::zeroGyro))); // TODO figure out who should be able to 0 the gyro
+    driverController.start().onTrue((new InstantCommand(m_drivebase::zeroGyro))); // TODO figure out who should be able to 0 the gyro
     operatorController.a().whileTrue(new RunCommand(()->shooter.shoot()).handleInterrupt(() -> shooter.stop()));
     operatorController.b().onTrue(new InstantCommand(()->shooter.stop()));
 
