@@ -101,10 +101,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean readyForShot() {
-    if ((int)intakeSensor.getRange() < 300 && (int)shooterSensor.getRange() < 200){
-      return true;
-    }
-    return false;
+    return ((int)intakeSensor.getRange() < 300 && (int)shooterSensor.getRange() < 200);
   }
 
   public boolean intaking(){
