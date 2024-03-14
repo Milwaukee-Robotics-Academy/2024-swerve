@@ -100,6 +100,16 @@ public class Shooter extends SubsystemBase {
     m_flywheelLeft.set(-.1);
   }
 
+  public void autoIntake()
+  {
+    m_triggerMotor.set(0.2);
+    m_triggerMotorLeft.set(0.2);
+    m_upperIntake.set(.5);
+    m_lowerIntake.set(.5);
+    m_flywheel.set(-.5);
+    m_flywheelLeft.set(-.5);
+  }
+
   public boolean readyForShot() {
     return ((int)intakeSensor.getRange() < 300 && (int)shooterSensor.getRange() < 200);
   }
