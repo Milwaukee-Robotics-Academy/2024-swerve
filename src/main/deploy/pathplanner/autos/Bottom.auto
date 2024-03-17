@@ -58,24 +58,6 @@
           "data": {
             "name": "intakeStop"
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "BottomStep3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intakeStop"
-          }
         }
       ]
     }
