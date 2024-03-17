@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Intake;
+import frc.robot.commands.ManualIntake;
 import frc.robot.commands.PositionForShot;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -28,6 +29,7 @@ import java.io.File;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import frc.robot.commands.Shoot;
+import frc.robot.commands.SpitBackOut;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -108,13 +110,14 @@ public class RobotContainer
 
       //   driverXbox.leftBumper().onFalse(new InstantCommand(()->shooter.stop()));
     //intake
-    operatorController.x().onTrue(new Intake(shooter)
+    operatorController.x().onTrue(new Intake(shooter).handleInterrupt(() -> shooter.stop())
       .andThen(new PositionForShot(shooter))
       .andThen(new InstantCommand(() -> driverController.getHID().setRumble(RumbleType.kBothRumble,1)))
       .andThen(new WaitCommand(1))
       .andThen(new InstantCommand(() -> driverController.getHID().setRumble(RumbleType.kBothRumble,0)))
       );
-    //driverXbox.x().onFalse(new ParallelCommandGroup(new InstantCommand(()->shooter.stop()),
+    operatorController.y().whileTrue(new ManualIntake(shooter));
+    operatorController.leftBumper().whileTrue(new SpitBackOut(shooter).handleInterrupt(() -> shooter.stop()));
     // new InstantCommand(()->shooter.stop()).handleInterrupt(() -> shooter.stop())));
 
 

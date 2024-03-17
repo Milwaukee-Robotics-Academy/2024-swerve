@@ -7,12 +7,12 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 
-public class Intake extends Command {
+public class ManualIntake extends Command {
   private Shooter m_shooter;
 
 
   /** Creates a new Intake. */
-  public Intake(Shooter shooter) {
+  public ManualIntake(Shooter shooter) {
     m_shooter = shooter;
     addRequirements(m_shooter);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -21,21 +21,16 @@ public class Intake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_shooter.autoIntake(); // startIntake();
+    m_shooter.startIntake();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-if(m_shooter.hasNote()){
-  m_shooter.stop();
-
-}else {
   m_shooter.startIntake();
 }
 
-  }
 
   // Called once the command ends or is interrupted.
   @Override
@@ -47,6 +42,6 @@ if(m_shooter.hasNote()){
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-      return m_shooter.hasNote();
+      return false;
   }
 }

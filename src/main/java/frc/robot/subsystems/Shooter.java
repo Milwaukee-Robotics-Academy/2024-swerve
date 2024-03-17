@@ -111,7 +111,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean readyForShot() {
-    return ((int)intakeSensor.getRange() < 300 && (int)shooterSensor.getRange() < 200);
+    return ((int)intakeSensor.getRange() < 300 && (int)shooterSensor.getRange() < 220);
   }
 
   public boolean intaking(){
@@ -124,10 +124,10 @@ public class Shooter extends SubsystemBase {
   
 
   public void bringNoteBackDown(){
-    m_upperIntake.set(0.3);
-    m_lowerIntake.set(0.75);
-    m_triggerMotor.set(-0.2);
-    m_triggerMotorLeft.set(-0.2);
+    m_upperIntake.set(0);
+    m_lowerIntake.set(0);
+    m_triggerMotor.set(-0.1);
+    m_triggerMotorLeft.set(-0.1);
     m_flywheel.set(.0);
     m_flywheelLeft.set(.0);
   }
@@ -137,10 +137,12 @@ public class Shooter extends SubsystemBase {
     m_triggerMotorLeft.set(.5);
     m_flywheel.set(1);
     m_flywheelLeft.set(1);
+    m_upperIntake.set(0.3);
+    m_lowerIntake.set(0.3);
   }
 
   public boolean hasNote(){
-    if ((int)intakeSensor.getRange() > 300 && (int)shooterSensor.getRange() < 200){
+    if ((int)shooterSensor.getRange() < 220){
       return true;
     }
     return false;
@@ -167,5 +169,14 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("IntakeSensor",intakeSensorDistance());
       SmartDashboard.putNumber("ShooterSensor",shooterSensorDistance());
       SmartDashboard.putBoolean("Has Note",hasNote());
+  }
+
+  public void spitBackOut() {
+    m_triggerMotor.set(-0.3);
+    m_triggerMotorLeft.set(-0.3);
+    m_upperIntake.set(-.4);
+    m_lowerIntake.set(-.4);
+    m_flywheel.set(-.1);
+    m_flywheelLeft.set(-.1);
   }
 }
