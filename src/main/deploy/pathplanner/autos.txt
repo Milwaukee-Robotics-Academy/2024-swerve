@@ -1,6 +1,6 @@
 Autos
 =====
 
-Top: Far-Side, closest to the Amp
+Top: Near-Side, closest to the Amp
 Middle: In the center
-Bottom: Near-side, closest to the source.
+Bottom: Far-Side, closest to the source.

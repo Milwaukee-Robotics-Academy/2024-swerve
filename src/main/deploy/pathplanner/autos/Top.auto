@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.0008437905963476,
-      "y": 6.652614092348042
+      "x": 0.8099299203965142,
+      "y": 6.520442951440464
     },
     "rotation": 42.27368900609369
   },
@@ -18,12 +18,6 @@
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "intake"
@@ -33,12 +27,6 @@
           "type": "path",
           "data": {
             "pathName": "TopStep1"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
           }
         },
         {
@@ -60,21 +48,9 @@
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "TopStep3"
+            "name": "intakeStop"
           }
         }
       ]

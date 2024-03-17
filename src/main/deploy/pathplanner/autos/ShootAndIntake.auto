@@ -18,9 +18,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "BackUp"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeStop"
           }
         }
       ]
