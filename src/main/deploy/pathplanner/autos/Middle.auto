@@ -2,7 +2,7 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.4267285779652068,
+      "x": 1.2064433431192452,
       "y": 5.5430292057165325
     },
     "rotation": 0.865865255473327
@@ -30,6 +30,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "intakeStop"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "MiddleStep2"
@@ -44,13 +50,7 @@
         {
           "type": "named",
           "data": {
-            "name": "intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "MiddleStep3"
+            "name": "intakeStop"
           }
         }
       ]
