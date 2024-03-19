@@ -30,6 +30,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.SpitBackOut;
+import frc.robot.commands.StopShooter;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -55,6 +56,7 @@ public class RobotContainer
   CommandXboxController operatorController = new CommandXboxController(1);
 
     private final SendableChooser<Command> autoChooser;
+  private final Trigger intaking;
 
  // Trigger intakeHasNote = new Trigger(shooter::hasNote);
 
@@ -67,6 +69,7 @@ public class RobotContainer
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
+    intaking = new Trigger(shooter::intaking);
 
     // Configure the trigger bindings
     configureBindings();
@@ -87,7 +90,7 @@ public class RobotContainer
         () -> MathUtil.applyDeadband(driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
         () -> driverController.getRawAxis(2));
 
-    // shooter.setDefaultCommand(new InstantCommand(()-> shooter.stop(), shooter));
+    shooter.setDefaultCommand(new StopShooter(shooter));
     m_drivebase.setDefaultCommand(
         !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
   }
@@ -104,20 +107,22 @@ public class RobotContainer
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     operatorController.start().onTrue((new InstantCommand(m_drivebase::zeroGyro))); // TODO figure out who should be able to 0 the gyro
     driverController.start().onTrue((new InstantCommand(m_drivebase::zeroGyro))); // TODO figure out who should be able to 0 the gyro
-    operatorController.a().whileTrue(new RunCommand(()->shooter.shoot()).handleInterrupt(() -> shooter.stop()));
-    operatorController.b().onTrue(new InstantCommand(()->shooter.stop()));
+    operatorController.a().whileTrue(new Shoot(shooter));
+    operatorController.b().onTrue(new InstantCommand(()-> shooter.stop(), shooter));
+    intaking.whileTrue(new RunCommand(() -> operatorController.getHID().setRumble(RumbleType.kBothRumble,1)));
+    intaking.whileFalse(new RunCommand(() -> operatorController.getHID().setRumble(RumbleType.kBothRumble,0)));
 
 
       //   driverXbox.leftBumper().onFalse(new InstantCommand(()->shooter.stop()));
     //intake
-    operatorController.x().onTrue(new Intake(shooter).handleInterrupt(() -> shooter.stop())
+    operatorController.x().onTrue(new Intake(shooter)
       .andThen(new PositionForShot(shooter))
       .andThen(new InstantCommand(() -> driverController.getHID().setRumble(RumbleType.kBothRumble,1)))
       .andThen(new WaitCommand(1))
       .andThen(new InstantCommand(() -> driverController.getHID().setRumble(RumbleType.kBothRumble,0)))
       );
     operatorController.y().whileTrue(new ManualIntake(shooter));
-    operatorController.leftBumper().whileTrue(new SpitBackOut(shooter).handleInterrupt(() -> shooter.stop()));
+    operatorController.leftBumper().whileTrue(new SpitBackOut(shooter));
     // new InstantCommand(()->shooter.stop()).handleInterrupt(() -> shooter.stop())));
 
 

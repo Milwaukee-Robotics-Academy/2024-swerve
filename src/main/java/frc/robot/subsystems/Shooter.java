@@ -115,7 +115,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean intaking(){
-    if( intakeSensorDistance() < 150) {
+    if( m_lowerIntake.get()>0 ) {
       return true;
     }
     return false;
@@ -169,6 +169,7 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("IntakeSensor",intakeSensorDistance());
       SmartDashboard.putNumber("ShooterSensor",shooterSensorDistance());
       SmartDashboard.putBoolean("Has Note",hasNote());
+      SmartDashboard.putData(this);
   }
 
   public void spitBackOut() {

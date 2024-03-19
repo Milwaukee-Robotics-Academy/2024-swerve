@@ -29,7 +29,8 @@ public class Intake extends Command {
   public void execute() {
 
 if(m_shooter.hasNote()){
-  m_shooter.stop();
+ // m_shooter.stop();
+ this.end(false);
 
 }else {
   m_shooter.startIntake();
@@ -40,7 +41,7 @@ if(m_shooter.hasNote()){
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-   // m_shooter.stop();
+   m_shooter.stop();
   
   }
 
