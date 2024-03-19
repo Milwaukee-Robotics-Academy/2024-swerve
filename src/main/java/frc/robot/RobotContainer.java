@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -19,12 +21,16 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Intake;
+import frc.robot.commands.ManualIntake;
 import frc.robot.commands.PositionForShot;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import frc.robot.commands.Shoot;
+import frc.robot.commands.SpitBackOut;
+import frc.robot.commands.StopShooter;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -36,20 +42,21 @@ public class RobotContainer
 
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem m_drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
-                                                                         "swerve"));
-  private final  Shooter shooter = new Shooter();                                                              
+                                                                         "swerve")); // "swerve" if on robot 5. "swerve-practice" if on red-bot
+  private static final  Shooter shooter = new Shooter();                                                              
     // CommandJoystick rotationController = new CommandJoystick(1);
 
  // private final Photonvision m_photonvision = new Photonvision();                                                                      
   // CommandJoystick rotationController = new CommandJoystick(1);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  CommandXboxController driverController = new CommandXboxController(1);
+  CommandXboxController driverController = new CommandXboxController(0);
 
   // CommandJoystick driverController   = new CommandJoystick(3);//(OperatorConstants.DRIVER_CONTROLLER_PORT);
-  CommandXboxController operatorController = new CommandXboxController(0);
+  CommandXboxController operatorController = new CommandXboxController(1);
 
     private final SendableChooser<Command> autoChooser;
+  private final Trigger intaking;
 
  // Trigger intakeHasNote = new Trigger(shooter::hasNote);
 
@@ -58,12 +65,14 @@ public class RobotContainer
    */
   public RobotContainer()
   {
-        autoChooser = AutoBuilder.buildAutoChooser();
-        SmartDashboard.putData("Auto Chooser", autoChooser);
+    namedCommandsConfig();
+
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+    intaking = new Trigger(shooter::intaking);
+
     // Configure the trigger bindings
     configureBindings();
-
-
 
     // Applies deadbands and inverts controls because joysticks
     // are back-right positive while robot
@@ -81,9 +90,9 @@ public class RobotContainer
         () -> MathUtil.applyDeadband(driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
         () -> driverController.getRawAxis(2));
 
+    shooter.setDefaultCommand(new StopShooter(shooter));
     m_drivebase.setDefaultCommand(
         !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
-    shooter.setDefaultCommand(new RunCommand(()-> shooter.stop(), shooter));
   }
 
   /**
@@ -96,9 +105,12 @@ public class RobotContainer
   private void configureBindings()
   {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    operatorController.start().onTrue((new InstantCommand(m_drivebase::zeroGyro)));
-    operatorController.a().whileTrue(new RunCommand(()->shooter.shoot()).handleInterrupt(() -> shooter.stop()));
-    operatorController.b().onTrue(new InstantCommand(()->shooter.stop()));
+    operatorController.start().onTrue((new InstantCommand(m_drivebase::zeroGyro))); // TODO figure out who should be able to 0 the gyro
+    driverController.start().onTrue((new InstantCommand(m_drivebase::zeroGyro))); // TODO figure out who should be able to 0 the gyro
+    operatorController.a().whileTrue(new Shoot(shooter));
+    operatorController.b().onTrue(new InstantCommand(()-> shooter.stop(), shooter));
+    intaking.whileTrue(new RunCommand(() -> operatorController.getHID().setRumble(RumbleType.kBothRumble,1)));
+    intaking.whileFalse(new RunCommand(() -> operatorController.getHID().setRumble(RumbleType.kBothRumble,0)));
 
 
       //   driverXbox.leftBumper().onFalse(new InstantCommand(()->shooter.stop()));
@@ -109,7 +121,8 @@ public class RobotContainer
       .andThen(new WaitCommand(1))
       .andThen(new InstantCommand(() -> driverController.getHID().setRumble(RumbleType.kBothRumble,0)))
       );
-    //driverXbox.x().onFalse(new ParallelCommandGroup(new InstantCommand(()->shooter.stop()),
+    operatorController.y().whileTrue(new ManualIntake(shooter));
+    operatorController.leftBumper().whileTrue(new SpitBackOut(shooter));
     // new InstantCommand(()->shooter.stop()).handleInterrupt(() -> shooter.stop())));
 
 
@@ -119,24 +132,24 @@ public class RobotContainer
   }
 
   // Registers the commands shoot and intake in autonumous for use in path planner
-  public void namedCommandsConfig()
+  public static void namedCommandsConfig()
   {
     NamedCommands.registerCommand("shoot", 
-      new SequentialCommandGroup(
-        new InstantCommand(shooter::shoot),
-        new WaitCommand(1),
-        new InstantCommand(shooter::stop)
-      )
+      // new SequentialCommandGroup(
+      //   new RunCommand(shooter::shoot),
+      //   new WaitCommand(1),
+      //   new InstantCommand(shooter::stop)
+      // )
+      new RunCommand(()->shooter.shoot()).withTimeout(2).andThen(shooter::stop)
     );
     NamedCommands.registerCommand("intake", 
-      new SequentialCommandGroup(
-        new InstantCommand(shooter::startIntake)
-      )
+      new InstantCommand(shooter::autoIntake)
     );
     NamedCommands.registerCommand("intakeStop",
-      new SequentialCommandGroup(
-        new InstantCommand(shooter::stop)
-      )
+      new InstantCommand(shooter::stop)
+    );
+    NamedCommands.registerCommand("readyShot",
+      new RunCommand(shooter::spitBackOut).withTimeout(0.06).andThen(shooter::stop).andThen(new WaitCommand(0.5))
     );
   }
 

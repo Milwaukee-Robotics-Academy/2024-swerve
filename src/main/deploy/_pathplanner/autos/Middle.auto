@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.8099299203965142,
-      "y": 6.520442951440464
+      "x": 1.1952931028369176,
+      "y": 5.5430292057165325
     },
-    "rotation": 59.03624346792656
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
@@ -26,7 +26,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "TopStep1"
+            "pathName": "MiddleStep1"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
           }
         },
         {
@@ -38,25 +44,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "TopStep2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "readyShot"
+            "pathName": "MiddleStep2"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "shoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intakeStop"
           }
         }
       ]

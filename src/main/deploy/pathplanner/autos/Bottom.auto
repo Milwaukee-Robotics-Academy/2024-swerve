@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.8099299203965142,
-      "y": 6.520442951440464
+      "x": 0.7511871911042578,
+      "y": 4.435076061565361
     },
-    "rotation": 59.03624346792656
+    "rotation": -61.38954033403475
   },
   "command": {
     "type": "sequential",
@@ -26,7 +26,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "TopStep1"
+            "pathName": "BottomStep1"
           }
         },
         {
@@ -38,7 +38,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "TopStep2"
+            "pathName": "BottomStep2"
           }
         },
         {

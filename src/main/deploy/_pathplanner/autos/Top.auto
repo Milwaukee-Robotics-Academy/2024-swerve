@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.8099299203965142,
-      "y": 6.520442951440464
+      "x": 1.0008437905963476,
+      "y": 6.652614092348042
     },
-    "rotation": 59.03624346792656
+    "rotation": -139.96974072811025
   },
   "command": {
     "type": "sequential",
@@ -18,6 +18,12 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "intake"
@@ -27,6 +33,12 @@
           "type": "path",
           "data": {
             "pathName": "TopStep1"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
           }
         },
         {
@@ -44,19 +56,25 @@
         {
           "type": "named",
           "data": {
-            "name": "readyShot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "shoot"
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "intakeStop"
+            "name": "intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TopStep3"
           }
         }
       ]

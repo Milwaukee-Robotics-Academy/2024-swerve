@@ -100,15 +100,22 @@ public class Shooter extends SubsystemBase {
     m_flywheelLeft.set(-.1);
   }
 
+  public void autoIntake()
+  {
+    m_triggerMotor.set(0.2);
+    m_triggerMotorLeft.set(0.2);
+    m_upperIntake.set(.5);
+    m_lowerIntake.set(.5);
+    m_flywheel.set(-.5);
+    m_flywheelLeft.set(-.5);
+  }
+
   public boolean readyForShot() {
-    if ((int)intakeSensor.getRange() < 300 && (int)shooterSensor.getRange() < 200){
-      return true;
-    }
-    return false;
+    return ((int)intakeSensor.getRange() < 300 && (int)shooterSensor.getRange() < 220);
   }
 
   public boolean intaking(){
-    if( intakeSensorDistance() < 150) {
+    if( m_lowerIntake.get()>0 ) {
       return true;
     }
     return false;
@@ -117,10 +124,10 @@ public class Shooter extends SubsystemBase {
   
 
   public void bringNoteBackDown(){
-    m_upperIntake.set(0.3);
-    m_lowerIntake.set(0.75);
-    m_triggerMotor.set(-0.2);
-    m_triggerMotorLeft.set(-0.2);
+    m_upperIntake.set(0);
+    m_lowerIntake.set(0);
+    m_triggerMotor.set(-0.1);
+    m_triggerMotorLeft.set(-0.1);
     m_flywheel.set(.0);
     m_flywheelLeft.set(.0);
   }
@@ -130,10 +137,12 @@ public class Shooter extends SubsystemBase {
     m_triggerMotorLeft.set(.5);
     m_flywheel.set(1);
     m_flywheelLeft.set(1);
+    m_upperIntake.set(0.3);
+    m_lowerIntake.set(0.3);
   }
 
   public boolean hasNote(){
-    if ((int)intakeSensor.getRange() > 300 && (int)shooterSensor.getRange() < 200){
+    if ((int)shooterSensor.getRange() < 220){
       return true;
     }
     return false;
@@ -160,5 +169,15 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("IntakeSensor",intakeSensorDistance());
       SmartDashboard.putNumber("ShooterSensor",shooterSensorDistance());
       SmartDashboard.putBoolean("Has Note",hasNote());
+      SmartDashboard.putData(this);
+  }
+
+  public void spitBackOut() {
+    m_triggerMotor.set(-0.3);
+    m_triggerMotorLeft.set(-0.3);
+    m_upperIntake.set(-.4);
+    m_lowerIntake.set(-.4);
+    m_flywheel.set(-.1);
+    m_flywheelLeft.set(-.1);
   }
 }

@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.8099299203965142,
-      "y": 6.520442951440464
+      "x": 1.2064433431192452,
+      "y": 5.551187918118234
     },
-    "rotation": 59.03624346792656
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -26,31 +26,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "TopStep1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intakeStop"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "TopStep2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "readyShot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shoot"
+            "pathName": "BackUp"
           }
         },
         {
