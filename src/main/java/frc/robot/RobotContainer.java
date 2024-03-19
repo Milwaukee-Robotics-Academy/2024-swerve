@@ -143,6 +143,9 @@ public class RobotContainer
     NamedCommands.registerCommand("intakeStop",
       new InstantCommand(shooter::stop)
     );
+    NamedCommands.registerCommand("readyShot",
+      new RunCommand(shooter::spitBackOut).withTimeout(0.06).andThen(shooter::stop).andThen(new WaitCommand(0.5))
+    );
   }
 
   /**

@@ -44,6 +44,12 @@
         {
           "type": "named",
           "data": {
+            "name": "readyShot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "shoot"
           }
         },
