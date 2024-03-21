@@ -220,6 +220,27 @@ public class SwerveSubsystem extends SubsystemBase
     });
   }
 
+    /**
+   * Command to drive the robot using translative values and heading as a setpoint.
+   *
+   * @param translationX Translation in the X direction. Cubed for smoother controls.
+   * @param translationY Translation in the Y direction. Cubed for smoother controls.
+   * @param heading    Heading X to calculate angle of the joystick.
+   * @return Drive command.
+   */
+  public Command driveTargetedCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier heading)
+  {
+    // swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
+    return run(() -> {
+      double xInput = Math.pow(translationX.getAsDouble(), 3); // Smooth controll out
+      double yInput = Math.pow(translationY.getAsDouble(), 3); // Smooth controll out
+      // Make the robot move
+      driveFieldOriented(swerveDrive.swerveController.getRawTargetSpeeds(xInput, yInput,
+                                                                      heading.getAsDouble()== -999? heading.getAsDouble() : swerveDrive.getOdometryHeading().getRadians(),
+                                                                      swerveDrive.getOdometryHeading().getRadians()));
+    });
+  }
+
   /**
    * Command to drive the robot using translative values and heading as a setpoint.
    *

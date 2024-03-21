@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -15,8 +16,10 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonPoseEstimator;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.DoubleSupplier;
 
 public class Photonvision extends SubsystemBase{
     static boolean enablePhotonInstances = true; //Nyahaha
@@ -24,6 +27,7 @@ public class Photonvision extends SubsystemBase{
     private PhotonPipelineResult pipelineResult;
     AprilTagFieldLayout aprilTagFieldLayout = null;
   	PhotonPoseEstimator photonPoseEstimator;
+    private static final List<Integer> speakerTargets = Arrays.asList( 4, 7);
 
     public Photonvision() {
         camera = new PhotonCamera("Arducam_OV9281_USB_Camera");
@@ -72,6 +76,13 @@ public class Photonvision extends SubsystemBase{
 
     public static void enableVision(boolean enable) {
         enablePhotonInstances = enable;
+    }
+
+    public double getSpeakerTarget() {
+        if (speakerTargets.contains(pipelineResult.getBestTarget().getFiducialId())){
+            return Rotation2d.fromDegrees(pipelineResult.getBestTarget().getYaw()).getRadians();
+        }
+        return -999;
     }
 
 }

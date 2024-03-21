@@ -23,6 +23,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Intake;
 import frc.robot.commands.ManualIntake;
 import frc.robot.commands.PositionForShot;
+import frc.robot.subsystems.Photonvision;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
@@ -46,7 +47,7 @@ public class RobotContainer
   private static final  Shooter shooter = new Shooter();                                                              
     // CommandJoystick rotationController = new CommandJoystick(1);
 
- // private final Photonvision m_photonvision = new Photonvision();                                                                      
+  private final Photonvision m_photonvision = new Photonvision();                                                                      
   // CommandJoystick rotationController = new CommandJoystick(1);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -112,6 +113,10 @@ public class RobotContainer
     intaking.whileTrue(new RunCommand(() -> operatorController.getHID().setRumble(RumbleType.kBothRumble,1)));
     intaking.whileFalse(new RunCommand(() -> operatorController.getHID().setRumble(RumbleType.kBothRumble,0)));
 
+    driverController.rightBumper().whileTrue(m_drivebase.driveTargetedCommand(        
+      () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+      () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+      m_photonvision::getSpeakerTarget));
 
       //   driverXbox.leftBumper().onFalse(new InstantCommand(()->shooter.stop()));
     //intake
