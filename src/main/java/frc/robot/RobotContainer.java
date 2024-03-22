@@ -122,7 +122,7 @@ public class RobotContainer
     driverController.povUpLeft().whileTrue(m_drivebase.driveTargetedCommand(        
       () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
       () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-      () -> Rotation2d.fromDegrees(45).getRadians()));
+      () -> Math.toRadians(45)));
 
       //   driverXbox.leftBumper().onFalse(new InstantCommand(()->shooter.stop()));
     //intake
