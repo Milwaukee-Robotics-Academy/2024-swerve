@@ -27,7 +27,7 @@ public class Photonvision extends SubsystemBase{
     private PhotonPipelineResult pipelineResult;
     AprilTagFieldLayout aprilTagFieldLayout = null;
   	PhotonPoseEstimator photonPoseEstimator;
-    private static final List<Integer> speakerTargets = Arrays.asList( 4, 7);
+    private static final List<Integer> speakerCenterTargets = Arrays.asList( 4, 7);
 
     public Photonvision() {
         camera = new PhotonCamera("Arducam_OV9281_USB_Camera");
@@ -79,7 +79,7 @@ public class Photonvision extends SubsystemBase{
     }
 
     public double getSpeakerTarget() {
-        if (speakerTargets.contains(pipelineResult.getBestTarget().getFiducialId())){
+        if (speakerCenterTargets.contains(pipelineResult.getBestTarget().getFiducialId())){
             return Rotation2d.fromDegrees(pipelineResult.getBestTarget().getYaw()).getRadians();
         }
         return -999;

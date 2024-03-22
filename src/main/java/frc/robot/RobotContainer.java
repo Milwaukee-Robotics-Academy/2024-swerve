@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -117,6 +118,11 @@ public class RobotContainer
       () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
       () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
       m_photonvision::getSpeakerTarget));
+
+    driverController.povUpLeft().whileTrue(m_drivebase.driveTargetedCommand(        
+      () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+      () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+      () -> Rotation2d.fromDegrees(45).getRadians()));
 
       //   driverXbox.leftBumper().onFalse(new InstantCommand(()->shooter.stop()));
     //intake
