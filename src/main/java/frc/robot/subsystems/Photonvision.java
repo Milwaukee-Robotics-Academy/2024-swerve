@@ -80,7 +80,7 @@ public class Photonvision extends SubsystemBase{
 
     public double getSpeakerTarget() {
         if (speakerCenterTargets.contains(pipelineResult.getBestTarget().getFiducialId())){
-            return Rotation2d.fromDegrees(pipelineResult.getBestTarget().getYaw()).getRadians();
+            return Math.toRadians(pipelineResult.getBestTarget().getYaw());
         }
         return -999;
     }
