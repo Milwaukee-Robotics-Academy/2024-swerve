@@ -130,10 +130,11 @@ public class RobotContainer
 
     // bind up-left to 45deg
     driverController.povUpLeft().whileTrue(
-      m_drivebase.driveTargetedCommand(        
+      m_drivebase.driveCommand(        
         () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> Math.PI / 4.0
+        0.5,
+        0.5
       )
     );
 
