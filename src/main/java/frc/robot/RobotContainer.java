@@ -121,10 +121,11 @@ public class RobotContainer
 
     // bind up to 0deg
     driverController.povUp().whileTrue(
-      m_drivebase.driveTargetedCommand(        
+      m_drivebase.driveCommand(        
         () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> 0.0
+        1.0,
+        0.0
       )
     );
 
@@ -140,28 +141,31 @@ public class RobotContainer
 
     // bind left to 90deg
     driverController.povLeft().whileTrue(
-      m_drivebase.driveTargetedCommand(        
+      m_drivebase.driveCommand(        
         () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> Math.PI / 2.0
+        0.0,
+        1.0
       )
     );
 
     // bind down-left to 135deg
     driverController.povDownLeft().whileTrue(
-      m_drivebase.driveTargetedCommand(        
+      m_drivebase.driveCommand(        
         () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> Math.PI * 3.0 / 4.0
+        -0.5,
+        0.5
       )
     );
 
     // bind down to 180deg
     driverController.povDown().whileTrue(
-      m_drivebase.driveTargetedCommand(        
+      m_drivebase.driveCommand(        
         () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> Math.PI
+        0.5,
+        0.5
       )
     );
 
@@ -185,10 +189,11 @@ public class RobotContainer
 
     // bind up-right to -45deg
     driverController.povUpRight().whileTrue(
-      m_drivebase.driveTargetedCommand(        
+      m_drivebase.driveCommand(        
         () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> Math.PI * 7.0 / 4.0
+        0.5,
+        -0.5
       )
     );
 
