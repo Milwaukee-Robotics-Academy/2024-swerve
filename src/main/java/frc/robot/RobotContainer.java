@@ -119,10 +119,32 @@ public class RobotContainer
       () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
       () -> m_photonvision.getSpeakerTarget()));
 
-    driverController.povUpLeft().whileTrue(m_drivebase.driveTargetedCommand(        
-      () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
-      () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-      () -> Math.toRadians(45)));
+    // bind up-left to 45deg
+    driverController.povUpLeft().whileTrue(
+      m_drivebase.driveTargetedCommand(        
+        () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+        () -> Math.toRadians(45)
+      )
+    );
+
+    // bind up to 0deg
+    driverController.povUp().whileTrue(
+      m_drivebase.driveTargetedCommand(        
+        () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+        () -> Math.toRadians(0)
+      )
+    );
+
+    // bind up-right to -45deg
+    driverController.povUp().whileTrue(
+      m_drivebase.driveTargetedCommand(        
+        () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+        () -> Math.toRadians(-45)
+      )
+    );
 
       //   driverXbox.leftBumper().onFalse(new InstantCommand(()->shooter.stop()));
     //intake
