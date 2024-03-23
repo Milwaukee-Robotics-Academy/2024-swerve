@@ -87,7 +87,7 @@ public class Photonvision extends SubsystemBase{
 
     public double getSpeakerTarget() {
         if(pipelineResult.hasTargets()){
-            if (speakerTargets.contains(pipelineResult.getBestTarget().getFiducialId())){
+            if (speakerCenterTargets.contains(pipelineResult.getBestTarget().getFiducialId())){
             return pipelineResult.getBestTarget().getYaw();
         }
     }
