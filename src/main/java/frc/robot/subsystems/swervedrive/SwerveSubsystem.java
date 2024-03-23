@@ -236,6 +236,7 @@ public class SwerveSubsystem extends SubsystemBase
     return run(() -> {
       double xInput = Math.pow(translationX.getAsDouble(), 3); // Smooth controll out
       double yInput = Math.pow(translationY.getAsDouble(), 3); // Smooth controll out
+      
       // Make the robot move
       driveFieldOriented(swerveDrive.swerveController.getRawTargetSpeeds(xInput, yInput,
                                                                       heading.getAsDouble()!= -999? -Math.toRadians(heading.getAsDouble()) : swerveDrive.getOdometryHeading().getRadians(),
