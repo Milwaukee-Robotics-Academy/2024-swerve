@@ -231,22 +231,32 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public Command driveTargetedCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingRadians)
   {
-    SmartDashboard.putNumber("Targetedheading", headingRadians.getAsDouble());
+    SmartDashboard.putNumber("TargetedHeading", headingRadians.getAsDouble());
+    // double xInput = Math.pow(translationX.getAsDouble(), 3); // Smooth control out
+    // double yInput = Math.pow(translationY.getAsDouble(), 3); // Smooth control out
+    double targetRadians = (headingRadians.getAsDouble() != -999) ? headingRadians.getAsDouble() : swerveDrive.getOdometryHeading().getRadians();
+    DoubleSupplier headingX = () -> Math.acos(headingRadians.getAsDouble());
+    DoubleSupplier headingY = () -> Math.asin(headingRadians.getAsDouble());
     // swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
-    return run(() -> {
-      double xInput = Math.pow(translationX.getAsDouble(), 3); // Smooth control out
-      double yInput = Math.pow(translationY.getAsDouble(), 3); // Smooth control out
-      double targetRadians = (headingRadians.getAsDouble() != -999) ? headingRadians.getAsDouble() : swerveDrive.getOdometryHeading().getRadians();
-      
-      // Make the robot move
-      driveFieldOriented(
-        swerveDrive.swerveController.getRawTargetSpeeds(
-          xInput, 
-          yInput,
-          targetRadians,
-          swerveDrive.getOdometryHeading().getRadians()
-        )
+
+    return run(() -> {      
+      this.driveCommand(
+        translationX,
+        translationY,
+        headingX,
+        headingY
       );
+
+      // // Make the robot move
+      // driveFieldOriented(
+      //   swerveDrive.swerveController.getTargetSpeeds(
+      //     xInput, 
+      //     yInput,
+      //     targetRadians,
+      //     swerveDrive.getOdometryHeading().getRadians(),
+      //     swerveDrive.getMaximumVelocity()
+      //   )
+      // );
     });
   }
 

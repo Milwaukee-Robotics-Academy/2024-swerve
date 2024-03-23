@@ -44,7 +44,7 @@ public class RobotContainer
 
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem m_drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
-                                                                         "swerve")); // "swerve" if on robot 5. "swerve-practice" if on red-bot
+                                                                         "swerve-practice")); // "swerve" if on robot 5. "swerve-practice" if on red-bot
   private static final  Shooter shooter = new Shooter();                                                              
     // CommandJoystick rotationController = new CommandJoystick(1);
 
@@ -119,30 +119,75 @@ public class RobotContainer
       () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
       () -> m_photonvision.getSpeakerTarget()));
 
-    // bind up-left to 45deg
-    driverController.povUpLeft().whileTrue(
-      m_drivebase.driveTargetedCommand(        
-        () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
-        () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> Math.toRadians(45)
-      )
-    );
-
     // bind up to 0deg
     driverController.povUp().whileTrue(
       m_drivebase.driveTargetedCommand(        
         () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> Math.toRadians(0)
+        () -> 0.0
+      )
+    );
+
+    // bind up-left to 45deg
+    driverController.povUpLeft().whileTrue(
+      m_drivebase.driveTargetedCommand(        
+        () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+        () -> Math.PI / 4.0
+      )
+    );
+
+    // bind left to 90deg
+    driverController.povLeft().whileTrue(
+      m_drivebase.driveTargetedCommand(        
+        () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+        () -> Math.PI / 2.0
+      )
+    );
+
+    // bind down-left to 135deg
+    driverController.povDownLeft().whileTrue(
+      m_drivebase.driveTargetedCommand(        
+        () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+        () -> Math.PI * 3.0 / 4.0
+      )
+    );
+
+    // bind down to 180deg
+    driverController.povDown().whileTrue(
+      m_drivebase.driveTargetedCommand(        
+        () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+        () -> Math.PI
+      )
+    );
+
+    // bind down-right to -135deg
+    driverController.povDownRight().whileTrue(
+      m_drivebase.driveTargetedCommand(        
+        () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+        () -> Math.PI * 5.0 / 4.0
+      )
+    );
+
+    // bind right to -90deg
+    driverController.povRight().whileTrue(
+      m_drivebase.driveTargetedCommand(        
+        () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+        () -> Math.PI * 3.0 / 2.0
       )
     );
 
     // bind up-right to -45deg
-    driverController.povUp().whileTrue(
+    driverController.povUpRight().whileTrue(
       m_drivebase.driveTargetedCommand(        
         () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> Math.toRadians(-45)
+        () -> Math.PI * 7.0 / 4.0
       )
     );
 
