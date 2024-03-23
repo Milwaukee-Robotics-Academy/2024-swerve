@@ -235,8 +235,8 @@ public class SwerveSubsystem extends SubsystemBase
     // double xInput = Math.pow(translationX.getAsDouble(), 3); // Smooth control out
     // double yInput = Math.pow(translationY.getAsDouble(), 3); // Smooth control out
     double targetRadians = (headingRadians.getAsDouble() != -999) ? headingRadians.getAsDouble() : swerveDrive.getOdometryHeading().getRadians();
-    DoubleSupplier headingX = () -> Math.acos(headingRadians.getAsDouble());
-    DoubleSupplier headingY = () -> Math.asin(headingRadians.getAsDouble());
+    DoubleSupplier headingX = () -> Math.acos(targetRadians);
+    DoubleSupplier headingY = () -> Math.asin(targetRadians);
     // swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
 
     return run(() -> {      
