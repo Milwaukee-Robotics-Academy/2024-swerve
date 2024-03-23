@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
@@ -71,6 +72,12 @@ public class Photonvision extends SubsystemBase{
     @Override
     public void periodic() {
         pipelineResult = camera.getLatestResult();
+        SmartDashboard.putBoolean("CameraTargets", pipelineResult.hasTargets());
+        if(pipelineResult.hasTargets()){
+        SmartDashboard.putNumber("DegreesToSpeaker", getSpeakerTarget());
+        }
+
+
             	
     }
 
@@ -79,9 +86,11 @@ public class Photonvision extends SubsystemBase{
     }
 
     public double getSpeakerTarget() {
-        if (speakerTargets.contains(pipelineResult.getBestTarget().getFiducialId())){
-            return Rotation2d.fromDegrees(pipelineResult.getBestTarget().getYaw()).getRadians();
+        if(pipelineResult.hasTargets()){
+            if (speakerTargets.contains(pipelineResult.getBestTarget().getFiducialId())){
+            return pipelineResult.getBestTarget().getYaw();
         }
+    }
         return -999;
     }
 

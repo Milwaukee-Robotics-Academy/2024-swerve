@@ -25,6 +25,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -230,13 +231,14 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public Command driveTargetedCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier heading)
   {
+    SmartDashboard.putNumber("Targetedheading", heading.getAsDouble());
     // swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
     return run(() -> {
       double xInput = Math.pow(translationX.getAsDouble(), 3); // Smooth controll out
       double yInput = Math.pow(translationY.getAsDouble(), 3); // Smooth controll out
       // Make the robot move
       driveFieldOriented(swerveDrive.swerveController.getRawTargetSpeeds(xInput, yInput,
-                                                                      heading.getAsDouble()== -999? heading.getAsDouble() : swerveDrive.getOdometryHeading().getRadians(),
+                                                                      heading.getAsDouble()!= -999? -Math.toRadians(heading.getAsDouble()) : swerveDrive.getOdometryHeading().getRadians(),
                                                                       swerveDrive.getOdometryHeading().getRadians()));
     });
   }
