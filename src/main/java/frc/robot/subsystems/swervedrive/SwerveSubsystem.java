@@ -346,6 +346,7 @@ public class SwerveSubsystem extends SubsystemBase
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Heading", this.getHeading().getRadians());
+    SmartDashboard.putData(this);
   }
 
   @Override

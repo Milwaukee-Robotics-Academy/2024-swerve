@@ -85,10 +85,14 @@ public class Photonvision extends SubsystemBase{
         enablePhotonInstances = enable;
     }
 
+    /**
+     * 
+     * @return RADIANs to speaker target
+     */
     public double getSpeakerTarget() {
         if(pipelineResult.hasTargets()){
             if (speakerCenterTargets.contains(pipelineResult.getBestTarget().getFiducialId())){
-            return pipelineResult.getBestTarget().getYaw();
+            return Math.toRadians(pipelineResult.getBestTarget().getYaw());
         }
     }
         return -999;

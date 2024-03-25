@@ -117,7 +117,7 @@ public class RobotContainer
     driverController.rightBumper().whileTrue(m_drivebase.driveTargetedCommand(        
       () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
       () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-      () -> m_photonvision.getSpeakerTarget()));
+      () -> -m_photonvision.getSpeakerTarget()));
 
     // bind up to 0deg
     driverController.povUp().whileTrue(
