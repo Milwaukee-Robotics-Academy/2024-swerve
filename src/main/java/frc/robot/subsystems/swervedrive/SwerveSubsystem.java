@@ -231,20 +231,21 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public Command driveTargetedCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingRadians)
   {
-    SmartDashboard.putNumber("TargetedHeading", headingRadians.getAsDouble());
     // double xInput = Math.pow(translationX.getAsDouble(), 3); // Smooth control out
     // double yInput = Math.pow(translationY.getAsDouble(), 3); // Smooth control out
-    double targetRadians = (headingRadians.getAsDouble() != -999) ? headingRadians.getAsDouble() : swerveDrive.getOdometryHeading().getRadians();
-    DoubleSupplier headingX = () -> Math.acos(targetRadians);
-    DoubleSupplier headingY = () -> Math.asin(targetRadians);
+
     // swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
 
-    return run(() -> {      
+    return run(() -> {     
+      SmartDashboard.putNumber("TargetedHeading", headingRadians.getAsDouble());
+      double targetRadians = (headingRadians.getAsDouble() != -999) ? headingRadians.getAsDouble() : swerveDrive.getOdometryHeading().getRadians();
+      DoubleSupplier headingX = () -> Math.cos(targetRadians);
+      DoubleSupplier headingY = () -> Math.sin(targetRadians);
       this.driveCommand(
         translationX,
         translationY,
-        headingX,
-        headingY
+        () -> Math.cos(headingRadians.getAsDouble()),
+        () -> Math.sin(headingRadians.getAsDouble())
       );
 
       // // Make the robot move

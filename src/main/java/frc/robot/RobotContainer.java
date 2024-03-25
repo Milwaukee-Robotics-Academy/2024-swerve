@@ -84,8 +84,7 @@ public class RobotContainer
     Command driveFieldOrientedDirectAngle = m_drivebase.driveCommand(
         () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> -driverController.getRightX(),
-        () -> -driverController.getRightY());
+        () -> -driverController.getRightX());
 
     Command driveFieldOrientedDirectAngleSim = m_drivebase.simDriveCommand(
         () -> MathUtil.applyDeadband(driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
@@ -107,7 +106,6 @@ public class RobotContainer
   private void configureBindings()
   {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    operatorController.start().onTrue((new InstantCommand(m_drivebase::zeroGyro))); // TODO figure out who should be able to 0 the gyro
     driverController.start().onTrue((new InstantCommand(m_drivebase::zeroGyro))); // TODO figure out who should be able to 0 the gyro
     operatorController.a().whileTrue(new Shoot(shooter));
     operatorController.b().onTrue(new InstantCommand(()-> shooter.stop(), shooter));
@@ -121,55 +119,61 @@ public class RobotContainer
 
     // bind up to 0deg
     driverController.povUp().whileTrue(
-      m_drivebase.driveTargetedCommand(        
+      m_drivebase.driveCommand(        
         () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> 0.0
+        () -> Math.cos(Math.toRadians(0)),
+        () -> Math.sin(Math.toRadians(0))
       )
     );
 
     // bind up-left to 45deg
     driverController.povUpLeft().whileTrue(
-      m_drivebase.driveTargetedCommand(        
+      m_drivebase.driveCommand(        
         () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> Math.PI / 4.0
+        () -> Math.cos(Math.toRadians(55)),
+        () -> Math.sin(Math.toRadians(55))
       )
     );
 
     // bind left to 90deg
     driverController.povLeft().whileTrue(
-      m_drivebase.driveTargetedCommand(        
+      m_drivebase.driveCommand(        
         () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> Math.PI / 2.0
+        () -> Math.cos(Math.toRadians(90)),
+        () -> Math.sin(Math.toRadians(90))
       )
     );
 
     // bind down-left to 135deg
     driverController.povDownLeft().whileTrue(
-      m_drivebase.driveTargetedCommand(        
+      m_drivebase.driveCommand(        
         () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> Math.PI * 3.0 / 4.0
+        () -> Math.cos(Math.toRadians(135)),
+        () -> Math.sin(Math.toRadians(135))
       )
     );
 
     // bind down to 180deg
     driverController.povDown().whileTrue(
-      m_drivebase.driveTargetedCommand(        
+      m_drivebase.driveCommand(        
         () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> Math.PI
+        () -> Math.cos(Math.toRadians(180)),
+        () -> Math.sin(Math.toRadians(180))
       )
     );
 
     // bind down-right to -135deg
     driverController.povDownRight().whileTrue(
-      m_drivebase.driveTargetedCommand(        
+      m_drivebase.driveCommand(        
         () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> Math.PI * 5.0 / 4.0
+        () -> Math.cos(Math.toRadians(-135)),
+        () -> Math.sin(Math.toRadians(-135))
       )
     );
 
@@ -208,7 +212,6 @@ public class RobotContainer
 //     intakeHasNote.onTrue(new WaitCommand(.3).andThen(new InstantCommand(()->intake.stop())));
 //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
   }
-
   // Registers the commands shoot and intake in autonumous for use in path planner
   public static void namedCommandsConfig()
   {
@@ -218,16 +221,21 @@ public class RobotContainer
       //   new WaitCommand(1),
       //   new InstantCommand(shooter::stop)
       // )
-      new RunCommand(()->shooter.shoot()).withTimeout(2).andThen(shooter::stop)
+      // new RunCommand(shooter::shoot).withTimeout(2)
+      new Shoot(shooter).withTimeout(2)
     );
     NamedCommands.registerCommand("intake", 
       new InstantCommand(shooter::autoIntake)
+      // new Intake(shooter).withTimeout(.1)
     );
     NamedCommands.registerCommand("intakeStop",
-      new InstantCommand(shooter::stop)
+      // new InstantCommand(shooter::stop)
+      new StopShooter(shooter).withTimeout(0.0)
     );
     NamedCommands.registerCommand("readyShot",
-      new RunCommand(shooter::spitBackOut).withTimeout(0.06).andThen(shooter::stop).andThen(new WaitCommand(0.5))
+      // new RunCommand(shooter::spitBackOut).withTimeout(0.06).andThen(new InstantCommand(shooter::stop)).andThen(new WaitCommand(0.5))
+      new SpitBackOut(shooter).withTimeout(0.06).andThen(new WaitCommand(0.5))
+      // TODO we may need to change the timeout to 0.07 or so, it's shooting too low.
     );
   }
 
