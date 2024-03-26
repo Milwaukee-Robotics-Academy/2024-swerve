@@ -112,10 +112,10 @@ public class RobotContainer
     intaking.whileTrue(new RunCommand(() -> operatorController.getHID().setRumble(RumbleType.kBothRumble,1)));
     intaking.whileFalse(new RunCommand(() -> operatorController.getHID().setRumble(RumbleType.kBothRumble,0)));
 
-    driverController.rightBumper().whileTrue(m_drivebase.driveTargetedCommand(        
-      () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
-      () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-      () -> -m_photonvision.getSpeakerTarget()));
+    // driverController.rightBumper().whileTrue(m_drivebase.driveTargetedCommand(        
+    //   () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+    //   () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+    //   () -> -m_photonvision.getSpeakerTarget()));
 
     // turn based on D-Pad input
     driverController.povUp().whileTrue(getPOVTurnCommand(0));
