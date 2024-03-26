@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -23,6 +24,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Intake;
 import frc.robot.commands.ManualIntake;
 import frc.robot.commands.PositionForShot;
+import frc.robot.subsystems.Photonvision;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
@@ -46,7 +48,7 @@ public class RobotContainer
   private static final  Shooter shooter = new Shooter();                                                              
     // CommandJoystick rotationController = new CommandJoystick(1);
 
- // private final Photonvision m_photonvision = new Photonvision();                                                                      
+  private final Photonvision m_photonvision = new Photonvision();                                                                      
   // CommandJoystick rotationController = new CommandJoystick(1);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -82,8 +84,7 @@ public class RobotContainer
     Command driveFieldOrientedDirectAngle = m_drivebase.driveCommand(
         () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> -driverController.getRightX(),
-        () -> -driverController.getRightY());
+        () -> -driverController.getRightX());
 
     Command driveFieldOrientedDirectAngleSim = m_drivebase.simDriveCommand(
         () -> MathUtil.applyDeadband(driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
@@ -105,15 +106,27 @@ public class RobotContainer
   private void configureBindings()
   {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    operatorController.start().onTrue((new InstantCommand(m_drivebase::zeroGyro))); // TODO figure out who should be able to 0 the gyro
     driverController.start().onTrue((new InstantCommand(m_drivebase::zeroGyro))); // TODO figure out who should be able to 0 the gyro
     operatorController.a().whileTrue(new Shoot(shooter));
     operatorController.b().onTrue(new InstantCommand(()-> shooter.stop(), shooter));
     intaking.whileTrue(new RunCommand(() -> operatorController.getHID().setRumble(RumbleType.kBothRumble,1)));
     intaking.whileFalse(new RunCommand(() -> operatorController.getHID().setRumble(RumbleType.kBothRumble,0)));
 
+    driverController.rightBumper().whileTrue(m_drivebase.driveTargetedCommand(        
+      () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+      () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+      () -> -m_photonvision.getSpeakerTarget()));
 
-      //   driverXbox.leftBumper().onFalse(new InstantCommand(()->shooter.stop()));
+    // turn based on D-Pad input
+    driverController.povUp().whileTrue(getPOVTurnCommand(0));
+    driverController.povUpLeft().whileTrue(getPOVTurnCommand(55));
+    driverController.povLeft().whileTrue(getPOVTurnCommand(90));
+    driverController.povDownLeft().whileTrue(getPOVTurnCommand(135));
+    driverController.povDown().whileTrue(getPOVTurnCommand(180));
+    driverController.povDownRight().whileTrue(getPOVTurnCommand(-135));
+    driverController.povRight().whileTrue(getPOVTurnCommand(-90));
+    driverController.povUpRight().whileTrue(getPOVTurnCommand(-55));
+
     //intake
     operatorController.x().onTrue(new Intake(shooter)
       .andThen(new PositionForShot(shooter))
@@ -125,12 +138,18 @@ public class RobotContainer
     operatorController.leftBumper().whileTrue(new SpitBackOut(shooter));
     // new InstantCommand(()->shooter.stop()).handleInterrupt(() -> shooter.stop())));
 
-
-
 //     intakeHasNote.onTrue(new WaitCommand(.3).andThen(new InstantCommand(()->intake.stop())));
 //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
   }
 
+  public Command getPOVTurnCommand(int direction){
+    return  m_drivebase.driveCommand(        
+      () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+      () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+      () -> Math.sin(Math.toRadians(direction)),
+      () -> Math.cos(Math.toRadians(direction))
+    );
+  }
   // Registers the commands shoot and intake in autonumous for use in path planner
   public static void namedCommandsConfig()
   {
@@ -140,16 +159,21 @@ public class RobotContainer
       //   new WaitCommand(1),
       //   new InstantCommand(shooter::stop)
       // )
-      new RunCommand(()->shooter.shoot()).withTimeout(2).andThen(shooter::stop)
+      // new RunCommand(shooter::shoot).withTimeout(2)
+      new Shoot(shooter).withTimeout(2)
     );
     NamedCommands.registerCommand("intake", 
       new InstantCommand(shooter::autoIntake)
+      // new Intake(shooter).withTimeout(.1)
     );
     NamedCommands.registerCommand("intakeStop",
-      new InstantCommand(shooter::stop)
+      // new InstantCommand(shooter::stop)
+      new StopShooter(shooter).withTimeout(0.0)
     );
     NamedCommands.registerCommand("readyShot",
-      new RunCommand(shooter::spitBackOut).withTimeout(0.06).andThen(shooter::stop).andThen(new WaitCommand(0.5))
+      // new RunCommand(shooter::spitBackOut).withTimeout(0.06).andThen(new InstantCommand(shooter::stop)).andThen(new WaitCommand(0.5))
+      new SpitBackOut(shooter).withTimeout(0.06).andThen(new WaitCommand(0.5))
+      // TODO we may need to change the timeout to 0.07 or so, it's shooting too low.
     );
   }
 

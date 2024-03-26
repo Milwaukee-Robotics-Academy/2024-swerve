@@ -25,6 +25,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -78,7 +79,7 @@ public class SwerveSubsystem extends SubsystemBase
     System.out.println("}");
 
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
-    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.LOW;
     try
     {
       swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed);
@@ -220,6 +221,46 @@ public class SwerveSubsystem extends SubsystemBase
     });
   }
 
+    /**
+   * Command to drive the robot using translative values and heading as a setpoint.
+   *
+   * @param translationX    Translation in the X direction. Cubed for smoother controls.
+   * @param translationY    Translation in the Y direction. Cubed for smoother controls.
+   * @param headingRadians  Heading X to calculate angle of the joystick.
+   * @return Drive command.
+   */
+  public Command driveTargetedCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingRadians)
+  {
+    // double xInput = Math.pow(translationX.getAsDouble(), 3); // Smooth control out
+    // double yInput = Math.pow(translationY.getAsDouble(), 3); // Smooth control out
+
+    // swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
+
+    return run(() -> {     
+      SmartDashboard.putNumber("TargetedHeading", headingRadians.getAsDouble());
+      double targetRadians = (headingRadians.getAsDouble() != -999) ? headingRadians.getAsDouble() : swerveDrive.getOdometryHeading().getRadians();
+      DoubleSupplier headingX = () -> Math.cos(targetRadians);
+      DoubleSupplier headingY = () -> Math.sin(targetRadians);
+      this.driveCommand(
+        translationX,
+        translationY,
+        () -> Math.cos(headingRadians.getAsDouble()),
+        () -> Math.sin(headingRadians.getAsDouble())
+      );
+
+      // // Make the robot move
+      // driveFieldOriented(
+      //   swerveDrive.swerveController.getTargetSpeeds(
+      //     xInput, 
+      //     yInput,
+      //     targetRadians,
+      //     swerveDrive.getOdometryHeading().getRadians(),
+      //     swerveDrive.getMaximumVelocity()
+      //   )
+      // );
+    });
+  }
+
   /**
    * Command to drive the robot using translative values and heading as a setpoint.
    *
@@ -305,6 +346,8 @@ public class SwerveSubsystem extends SubsystemBase
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("Heading", this.getHeading().getRadians());
+    SmartDashboard.putData(this);
   }
 
   @Override

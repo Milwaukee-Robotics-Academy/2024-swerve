@@ -3,10 +3,12 @@ package frc.robot.subsystems;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
@@ -15,8 +17,10 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonPoseEstimator;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.DoubleSupplier;
 
 public class Photonvision extends SubsystemBase{
     static boolean enablePhotonInstances = true; //Nyahaha
@@ -24,6 +28,7 @@ public class Photonvision extends SubsystemBase{
     private PhotonPipelineResult pipelineResult;
     AprilTagFieldLayout aprilTagFieldLayout = null;
   	PhotonPoseEstimator photonPoseEstimator;
+    private static final List<Integer> speakerCenterTargets = Arrays.asList( 4, 7);
 
     public Photonvision() {
         camera = new PhotonCamera("Arducam_OV9281_USB_Camera");
@@ -67,11 +72,30 @@ public class Photonvision extends SubsystemBase{
     @Override
     public void periodic() {
         pipelineResult = camera.getLatestResult();
+        SmartDashboard.putBoolean("CameraTargets", pipelineResult.hasTargets());
+        if(pipelineResult.hasTargets()){
+        SmartDashboard.putNumber("DegreesToSpeaker", getSpeakerTarget());
+        }
+
+
             	
     }
 
     public static void enableVision(boolean enable) {
         enablePhotonInstances = enable;
+    }
+
+    /**
+     * 
+     * @return RADIANs to speaker target
+     */
+    public double getSpeakerTarget() {
+        if(pipelineResult.hasTargets()){
+            if (speakerCenterTargets.contains(pipelineResult.getBestTarget().getFiducialId())){
+            return Math.toRadians(pipelineResult.getBestTarget().getYaw());
+        }
+    }
+        return -999;
     }
 
 }
