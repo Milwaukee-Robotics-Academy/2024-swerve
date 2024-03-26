@@ -122,8 +122,8 @@ public class RobotContainer
       m_drivebase.driveCommand(        
         () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> Math.cos(Math.toRadians(0)),
-        () -> Math.sin(Math.toRadians(0))
+        () -> Math.sin(Math.toRadians(0)),
+        () -> Math.cos(Math.toRadians(0))
       )
     );
 
@@ -132,8 +132,8 @@ public class RobotContainer
       m_drivebase.driveCommand(        
         () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> Math.cos(Math.toRadians(55)),
-        () -> Math.sin(Math.toRadians(55))
+        () -> Math.sin(Math.toRadians(55)),
+        () -> Math.cos(Math.toRadians(55))
       )
     );
 
@@ -142,8 +142,8 @@ public class RobotContainer
       m_drivebase.driveCommand(        
         () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> Math.cos(Math.toRadians(90)),
-        () -> Math.sin(Math.toRadians(90))
+        () -> Math.sin(Math.toRadians(90)),
+        () -> Math.cos(Math.toRadians(90))
       )
     );
 
@@ -152,8 +152,8 @@ public class RobotContainer
       m_drivebase.driveCommand(        
         () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> Math.cos(Math.toRadians(135)),
-        () -> Math.sin(Math.toRadians(135))
+        () -> Math.sin(Math.toRadians(135)),
+        () -> Math.cos(Math.toRadians(135))
       )
     );
 
@@ -162,8 +162,8 @@ public class RobotContainer
       m_drivebase.driveCommand(        
         () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> Math.cos(Math.toRadians(180)),
-        () -> Math.sin(Math.toRadians(180))
+        () -> Math.sin(Math.toRadians(180)),
+        () -> Math.cos(Math.toRadians(180))
       )
     );
 
@@ -172,26 +172,28 @@ public class RobotContainer
       m_drivebase.driveCommand(        
         () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> Math.cos(Math.toRadians(-135)),
-        () -> Math.sin(Math.toRadians(-135))
+        () -> Math.sin(Math.toRadians(-135)),
+        () -> Math.cos(Math.toRadians(-135))
       )
     );
 
     // bind right to -90deg
     driverController.povRight().whileTrue(
-      m_drivebase.driveTargetedCommand(        
+      m_drivebase.driveCommand(        
         () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> Math.PI * 3.0 / 2.0
+        () -> Math.sin(Math.toRadians(-90)),
+        () -> Math.cos(Math.toRadians(-90))
       )
     );
 
-    // bind up-right to -45deg
+    // bind up-right to -55deg
     driverController.povUpRight().whileTrue(
-      m_drivebase.driveTargetedCommand(        
+      m_drivebase.driveCommand(        
         () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> Math.PI * 7.0 / 4.0
+        () -> Math.sin(Math.toRadians(-55)),
+        () -> Math.cos(Math.toRadians(-55))
       )
     );
 
