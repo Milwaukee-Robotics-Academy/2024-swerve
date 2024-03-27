@@ -210,17 +210,17 @@ public class SwerveSubsystem extends SubsystemBase
   public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX,
                               DoubleSupplier headingY)
   {
-    final double speedMultiplier;
+    final double AllianceDirectionMultiplier;
     Optional<Alliance> alliance = DriverStation.getAlliance();
     // reverse controls if red alliance
     if (alliance.isPresent()){
       if (alliance.get() == Alliance.Red){
-        speedMultiplier = -1;
+        AllianceDirectionMultiplier = -1;
       } else {
-        speedMultiplier = 1;
+        AllianceDirectionMultiplier = 1;
       }
     } else {
-      speedMultiplier = 1;
+      AllianceDirectionMultiplier = 1;
     }
     // swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
     return run(() -> {
@@ -228,8 +228,8 @@ public class SwerveSubsystem extends SubsystemBase
       double yInput = Math.pow(translationY.getAsDouble(), 3); // Smooth controll out
       // Make the robot move
       driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(xInput, yInput,
-                                                                      speedMultiplier * headingX.getAsDouble(),
-                                                                      speedMultiplier * headingY.getAsDouble(),
+                                                                      AllianceDirectionMultiplier * headingX.getAsDouble(),
+                                                                      AllianceDirectionMultiplier * headingY.getAsDouble(),
                                                                       swerveDrive.getOdometryHeading().getRadians(),
                                                                       swerveDrive.getMaximumVelocity()));
     });
@@ -538,7 +538,7 @@ public class SwerveSubsystem extends SubsystemBase
   public double getLastAngleScalar(){
     return swerveDrive.swerveController.lastAngleScalar;
   }
-  
+
   /**
    * Lock the swerve drive to prevent it from moving.
    */
