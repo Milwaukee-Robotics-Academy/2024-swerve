@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.2064433431192452,
-      "y": 5.5430292057165325
+      "x": 1.2211290254423093,
+      "y": 5.551187918118234
     },
     "rotation": 0
   },
@@ -44,7 +44,37 @@
         {
           "type": "named",
           "data": {
-            "name": "readyShot"
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "M-3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeStop"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3-M"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "M-DriftForward"
           }
         },
         {
@@ -62,7 +92,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "M-5"
+            "pathName": "M-1"
           }
         },
         {
@@ -74,49 +104,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "5-M"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "readyShot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intake"
+            "pathName": "1-M"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "M-6"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intakeStop"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "6-M"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "readyShot"
+            "pathName": "M-DriftForward"
           }
         },
         {

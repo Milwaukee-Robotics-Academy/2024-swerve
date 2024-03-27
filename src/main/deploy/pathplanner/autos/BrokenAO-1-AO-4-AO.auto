@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.2064433431192452,
-      "y": 5.5430292057165325
+      "x": 0.8099299203965142,
+      "y": 6.520442951440464
     },
-    "rotation": 0
+    "rotation": 59.756731296175474
   },
   "command": {
     "type": "sequential",
@@ -26,7 +26,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "M-2"
+            "pathName": "A-1"
           }
         },
         {
@@ -38,13 +38,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2-M"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "readyShot"
+            "pathName": "1-A"
           }
         },
         {
@@ -62,7 +56,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "M-5"
+            "pathName": "A-4"
           }
         },
         {
@@ -74,49 +68,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "5-M"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "readyShot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "M-6"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intakeStop"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "6-M"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "readyShot"
+            "pathName": "4-A"
           }
         },
         {
