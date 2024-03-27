@@ -6,6 +6,8 @@ package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -28,6 +30,8 @@ import frc.robot.subsystems.Photonvision;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
+import java.util.Optional;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import frc.robot.commands.Shoot;
@@ -190,6 +194,12 @@ public class RobotContainer
 
   public void setDriveMode()
   {
+      Optional<Alliance> alliance = DriverStation.getAlliance();
+        if (alliance.isPresent() && alliance.get() == Alliance.Red) {
+            m_drivebase.setLastAngleScalar(180); // DEFAULT
+        } else {
+            m_drivebase.setLastAngleScalar(0); // DEFAULT
+        }
     //drivebase.setDefaultCommand();
   }
 

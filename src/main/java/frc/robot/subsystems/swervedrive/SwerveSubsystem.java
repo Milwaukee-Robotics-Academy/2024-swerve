@@ -24,12 +24,14 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.io.File;
+import java.util.Optional;
 import java.util.function.DoubleSupplier;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
@@ -208,14 +210,26 @@ public class SwerveSubsystem extends SubsystemBase
   public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX,
                               DoubleSupplier headingY)
   {
+    final double speedMultiplier;
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+    // reverse controls if red alliance
+    if (alliance.isPresent()){
+      if (alliance.get() == Alliance.Red){
+        speedMultiplier = -1;
+      } else {
+        speedMultiplier = 1;
+      }
+    } else {
+      speedMultiplier = 1;
+    }
     // swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
     return run(() -> {
       double xInput = Math.pow(translationX.getAsDouble(), 3); // Smooth controll out
       double yInput = Math.pow(translationY.getAsDouble(), 3); // Smooth controll out
       // Make the robot move
       driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(xInput, yInput,
-                                                                      headingX.getAsDouble(),
-                                                                      headingY.getAsDouble(),
+                                                                      speedMultiplier * headingX.getAsDouble(),
+                                                                      speedMultiplier * headingY.getAsDouble(),
                                                                       swerveDrive.getOdometryHeading().getRadians(),
                                                                       swerveDrive.getMaximumVelocity()));
     });
@@ -517,6 +531,14 @@ public class SwerveSubsystem extends SubsystemBase
     return swerveDrive.swerveDriveConfiguration;
   }
 
+  public void setLastAngleScalar(double angle){
+    swerveDrive.swerveController.lastAngleScalar = angle;
+  }
+
+  public double getLastAngleScalar(){
+    return swerveDrive.swerveController.lastAngleScalar;
+  }
+  
   /**
    * Lock the swerve drive to prevent it from moving.
    */
