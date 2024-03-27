@@ -26,7 +26,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Y-2"
+            "pathName": "M-2"
           }
         },
         {
@@ -38,7 +38,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2-Y"
+            "pathName": "2-M"
           }
         },
         {
@@ -62,7 +62,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Y-d"
+            "pathName": "M-5"
           }
         },
         {
@@ -74,7 +74,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "d-Y"
+            "pathName": "5-M"
           }
         },
         {
