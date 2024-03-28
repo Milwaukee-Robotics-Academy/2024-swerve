@@ -100,7 +100,7 @@ public class Shooter extends SubsystemBase {
     m_flywheelLeft.set(-.1);
   }
 
-  public void autoIntake()
+  public void intakeForAutonomous()
   {
     m_triggerMotor.set(0.2);
     m_triggerMotorLeft.set(0.2);

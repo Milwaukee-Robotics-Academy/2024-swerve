@@ -167,8 +167,11 @@ public class RobotContainer
       new Shoot(shooter).withTimeout(2)
     );
     NamedCommands.registerCommand("intake", 
-      new InstantCommand(shooter::autoIntake)
+      new InstantCommand(shooter::intakeForAutonomous)
       // new Intake(shooter).withTimeout(.1)
+    );
+    NamedCommands.registerCommand("levelIntake",
+      new Intake(shooter).withTimeout(0.5)
     );
     NamedCommands.registerCommand("intakeStop",
       // new InstantCommand(shooter::stop)
