@@ -44,6 +44,12 @@
         {
           "type": "named",
           "data": {
+            "name": "levelIntake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "shoot"
           }
         },
@@ -72,9 +78,9 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "M-DriftForward"
+            "name": "levelIntake"
           }
         },
         {
@@ -108,9 +114,9 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "M-DriftForward"
+            "name": "levelIntake"
           }
         },
         {
