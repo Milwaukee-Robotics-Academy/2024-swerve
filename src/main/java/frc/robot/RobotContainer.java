@@ -39,38 +39,40 @@ import frc.robot.commands.SpitBackOut;
 import frc.robot.commands.StopShooter;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
- * little robot logic should actually be handled in the {@link Robot} periodic methods (other than the scheduler calls).
- * Instead, the structure of the robot (including subsystems, commands, and trigger mappings) should be declared here.
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a "declarative" paradigm, very
+ * little robot logic should actually be handled in the {@link Robot} periodic
+ * methods (other than the scheduler calls).
+ * Instead, the structure of the robot (including subsystems, commands, and
+ * trigger mappings) should be declared here.
  */
-public class RobotContainer
-{
+public class RobotContainer {
 
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem m_drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
-                                                                         "swerve")); // "swerve" if on robot 5. "swerve-practice" if on red-bot
-  private static final  Shooter shooter = new Shooter();                                                              
-    // CommandJoystick rotationController = new CommandJoystick(1);
+      "swerve")); // "swerve" if on robot 5. "swerve-practice" if on red-bot
+  private static final Shooter shooter = new Shooter();
+  // CommandJoystick rotationController = new CommandJoystick(1);
 
-  private final Photonvision m_photonvision = new Photonvision();                                                                      
+  private final Photonvision m_photonvision = new Photonvision();
   // CommandJoystick rotationController = new CommandJoystick(1);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   CommandXboxController driverController = new CommandXboxController(0);
 
-  // CommandJoystick driverController   = new CommandJoystick(3);//(OperatorConstants.DRIVER_CONTROLLER_PORT);
+  // CommandJoystick driverController = new
+  // CommandJoystick(3);//(OperatorConstants.DRIVER_CONTROLLER_PORT);
   CommandXboxController operatorController = new CommandXboxController(1);
 
-    private final SendableChooser<Command> autoChooser;
+  private final SendableChooser<Command> autoChooser;
   private final Trigger intaking;
 
- // Trigger intakeHasNote = new Trigger(shooter::hasNote);
+  // Trigger intakeHasNote = new Trigger(shooter::hasNote);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
-  public RobotContainer()
-  {
+  public RobotContainer() {
     namedCommandsConfig();
 
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -101,22 +103,31 @@ public class RobotContainer
   }
 
   /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary predicate, or via the
-   * named factories in {@link edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
-   * {@link CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4}
-   * controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight joysticks}.
+   * Use this method to define your trigger->command mappings. Triggers can be
+   * created via the
+   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
+   * an arbitrary predicate, or via the
+   * named factories in
+   * {@link edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses
+   * for
+   * {@link CommandXboxController
+   * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4}
+   * controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick
+   * Flight joysticks}.
    */
-  private void configureBindings()
-  {
+  private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    driverController.start().onTrue((new InstantCommand(m_drivebase::zeroGyro))); // TODO figure out who should be able to 0 the gyro
+    driverController.start().onTrue((new InstantCommand(m_drivebase::zeroGyro))); // TODO figure out who should be able
+                                                                                  // to 0 the gyro
     operatorController.a().whileTrue(new Shoot(shooter));
-    operatorController.b().onTrue(new InstantCommand(()-> shooter.stop(), shooter));
-    intaking.whileTrue(new RunCommand(() -> operatorController.getHID().setRumble(RumbleType.kBothRumble,1)).unless(() -> !DriverStation.isTeleopEnabled()));
-    intaking.whileFalse(new RunCommand(() -> operatorController.getHID().setRumble(RumbleType.kBothRumble,0)));
+    operatorController.b().onTrue(new InstantCommand(() -> shooter.stop(), shooter));
+    intaking.whileTrue(new RunCommand(() -> operatorController.getHID().setRumble(RumbleType.kBothRumble, 1))
+        .unless(() -> !DriverStation.isTeleopEnabled()));
+    intaking.whileFalse(new RunCommand(() -> operatorController.getHID().setRumble(RumbleType.kBothRumble, 0)));
 
-    driverController.rightBumper().whileTrue(getPOVTurnCommand((int)(Math.round(Math.toDegrees(-m_photonvision.getSpeakerTarget())))));
+    driverController.rightBumper().whileTrue(
+        getPOVTurnCommand((int) (Math.round(Math.toDegrees(-m_photonvision.getSpeakerTarget()))))
+            .unless(() -> !m_photonvision.hasSpeakerTarget()));
 
     // turn based on D-Pad input
     driverController.povUp().whileTrue(getPOVTurnCommand(0));
@@ -128,56 +139,55 @@ public class RobotContainer
     driverController.povRight().whileTrue(getPOVTurnCommand(-90));
     driverController.povUpRight().whileTrue(getPOVTurnCommand(-55));
 
-    //intake
+    // intake
     operatorController.x().onTrue(new Intake(shooter)
-      .andThen(new PositionForShot(shooter))
-      .andThen(new InstantCommand(() -> driverController.getHID().setRumble(RumbleType.kBothRumble,1)))
-      .andThen(new WaitCommand(1))
-      .andThen(new InstantCommand(() -> driverController.getHID().setRumble(RumbleType.kBothRumble,0)))
-      );
+        .andThen(new PositionForShot(shooter))
+        .andThen(new InstantCommand(() -> driverController.getHID().setRumble(RumbleType.kBothRumble, 1)))
+        .andThen(new WaitCommand(1))
+        .andThen(new InstantCommand(() -> driverController.getHID().setRumble(RumbleType.kBothRumble, 0))));
     operatorController.y().whileTrue(new ManualIntake(shooter));
     operatorController.leftBumper().whileTrue(new SpitBackOut(shooter));
-    // new InstantCommand(()->shooter.stop()).handleInterrupt(() -> shooter.stop())));
+    // new InstantCommand(()->shooter.stop()).handleInterrupt(() ->
+    // shooter.stop())));
 
-//     intakeHasNote.onTrue(new WaitCommand(.3).andThen(new InstantCommand(()->intake.stop())));
-//    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
+    // intakeHasNote.onTrue(new WaitCommand(.3).andThen(new
+    // InstantCommand(()->intake.stop())));
+    // new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new
+    // InstantCommand(drivebase::lock, drivebase)));
   }
 
-  public Command getPOVTurnCommand(int direction){
-    return  m_drivebase.driveCommand(        
-      () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
-      () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-      () -> Math.sin(Math.toRadians(direction)),
-      () -> Math.cos(Math.toRadians(direction))
-    );
+  public Command getPOVTurnCommand(int direction) {
+    return m_drivebase.driveCommand(
+        () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+        () -> Math.sin(Math.toRadians(direction)),
+        () -> Math.cos(Math.toRadians(direction)));
   }
+
   // Registers the commands shoot and intake in autonumous for use in path planner
-  public static void namedCommandsConfig()
-  {
-    NamedCommands.registerCommand("shoot", 
-      // new SequentialCommandGroup(
-      //   new RunCommand(shooter::shoot),
-      //   new WaitCommand(1),
-      //   new InstantCommand(shooter::stop)
-      // )
-      // new RunCommand(shooter::shoot).withTimeout(2)
-      new Shoot(shooter).withTimeout(.75)
-    );
-    NamedCommands.registerCommand("intake", 
-      new InstantCommand(shooter::intakeForAutonomous)
-      // new Intake(shooter).withTimeout(.1)
+  public static void namedCommandsConfig() {
+    NamedCommands.registerCommand("shoot",
+        // new SequentialCommandGroup(
+        // new RunCommand(shooter::shoot),
+        // new WaitCommand(1),
+        // new InstantCommand(shooter::stop)
+        // )
+        // new RunCommand(shooter::shoot).withTimeout(2)
+        new Shoot(shooter).withTimeout(.75));
+    NamedCommands.registerCommand("intake",
+        new InstantCommand(shooter::intakeForAutonomous)
+    // new Intake(shooter).withTimeout(.1)
     );
     NamedCommands.registerCommand("levelIntake",
-      new RunCommand(shooter::spitBackOut).until(() -> !shooter.hasNote()).withTimeout(0.2)
-    );
+        new RunCommand(shooter::spitBackOut).until(() -> !shooter.hasNote()).withTimeout(0.2));
     NamedCommands.registerCommand("intakeStop",
-      // new InstantCommand(shooter::stop)
-      new StopShooter(shooter).withTimeout(0.0)
-    );
+        // new InstantCommand(shooter::stop)
+        new StopShooter(shooter).withTimeout(0.0));
     NamedCommands.registerCommand("readyShot",
-      // new RunCommand(shooter::spitBackOut).withTimeout(0.06).andThen(new InstantCommand(shooter::stop)).andThen(new WaitCommand(0.5))
-      new SpitBackOut(shooter).withTimeout(0.06).andThen(new WaitCommand(0.5))
-      // TODO we may need to change the timeout to 0.07 or so, it's shooting too low.
+        // new RunCommand(shooter::spitBackOut).withTimeout(0.06).andThen(new
+        // InstantCommand(shooter::stop)).andThen(new WaitCommand(0.5))
+        new SpitBackOut(shooter).withTimeout(0.06).andThen(new WaitCommand(0.5))
+    // TODO we may need to change the timeout to 0.07 or so, it's shooting too low.
     );
   }
 
@@ -186,54 +196,57 @@ public class RobotContainer
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand()
-  {
+  public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return autoChooser.getSelected();
   }
 
-  public void setDriveMode()
-  {
-      Optional<Alliance> alliance = DriverStation.getAlliance();
-        if (alliance.isPresent() && alliance.get() == Alliance.Red) {
-            m_drivebase.setLastAngleScalar(180); // DEFAULT
-        } else {
-            m_drivebase.setLastAngleScalar(0); // DEFAULT
-        }
-    //drivebase.setDefaultCommand();
+  public void setDriveMode() {
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+    if (alliance.isPresent() && alliance.get() == Alliance.Red) {
+      m_drivebase.setLastAngleScalar(180); // DEFAULT
+    } else {
+      m_drivebase.setLastAngleScalar(0); // DEFAULT
+    }
+    // drivebase.setDefaultCommand();
   }
 
-  public void setMotorBrake(boolean brake)
-  {
+  public void setMotorBrake(boolean brake) {
     m_drivebase.setMotorBrake(brake);
   }
 
-  public void periodic()
-  {
+  public void periodic() {
     // if (m_photonvision.hasTargets())
     // {
-    //   Optional<EstimatedRobotPose> estimatedPose = m_photonvision.getEstimatedGlobalPose(m_drivebase.getPose());
-    //   if (estimatedPose.isPresent())
-    //   {
-    //     Pose2d robotPose2d = estimatedPose.get().estimatedPose.toPose2d();
-    //     double distance = m_photonvision.getBestTarget().getBestCameraToTarget().getTranslation().getNorm();
-    //   }
+    // Optional<EstimatedRobotPose> estimatedPose =
+    // m_photonvision.getEstimatedGlobalPose(m_drivebase.getPose());
+    // if (estimatedPose.isPresent())
+    // {
+    // Pose2d robotPose2d = estimatedPose.get().estimatedPose.toPose2d();
+    // double distance =
+    // m_photonvision.getBestTarget().getBestCameraToTarget().getTranslation().getNorm();
+    // }
     // }
     // SmartDashboard.putData("HD_USB_Camera-output", m_photonvision);
-  // Check to see if photonvision can see Apriltag targets. if so, get an estimated robot pose based on target and update the odometry
-	// if (m_photonvision.hasTargets()) {
-	// 		Optional<EstimatedRobotPose> estimatedPose = m_photonvision.getEstimatedGlobalPose(m_drivebase.getPose());
-	// 		if (estimatedPose.isPresent()) {
-	// 			Pose2d robotPose2d = estimatedPose.get().estimatedPose.toPose2d();
-	// 			double distance = m_photonvision.getBestTarget().getBestCameraToTarget().getTranslation().getNorm();
+    // Check to see if photonvision can see Apriltag targets. if so, get an
+    // estimated robot pose based on target and update the odometry
+    // if (m_photonvision.hasTargets()) {
+    // Optional<EstimatedRobotPose> estimatedPose =
+    // m_photonvision.getEstimatedGlobalPose(m_drivebase.getPose());
+    // if (estimatedPose.isPresent()) {
+    // Pose2d robotPose2d = estimatedPose.get().estimatedPose.toPose2d();
+    // double distance =
+    // m_photonvision.getBestTarget().getBestCameraToTarget().getTranslation().getNorm();
 
-	// 			//Scale confidence in Vision Measurements based on distance
-	// 		//	m_drivebase.setVisionMeasurementStdDevs(MatBuilder.fill(Nat.N3(), Nat.N1(), distance * 1.2, distance * 1.2, 0.01));//TODO: find and fix!
-  //       //Add VisionMeasurement to odometry
-	// 			m_drivebase.addVisionMeasurement(new Pose2d(robotPose2d.getTranslation(), m_drivebase.getHeading()), estimatedPose.get().timestampSeconds);
-	// 		}
-	// 	}
-  // TODO uncomment this code
+    // //Scale confidence in Vision Measurements based on distance
+    // // m_drivebase.setVisionMeasurementStdDevs(MatBuilder.fill(Nat.N3(),
+    // Nat.N1(), distance * 1.2, distance * 1.2, 0.01));//TODO: find and fix!
+    // //Add VisionMeasurement to odometry
+    // m_drivebase.addVisionMeasurement(new Pose2d(robotPose2d.getTranslation(),
+    // m_drivebase.getHeading()), estimatedPose.get().timestampSeconds);
+    // }
+    // }
+    // TODO uncomment this code
 
   }
 }

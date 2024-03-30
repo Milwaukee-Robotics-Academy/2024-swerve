@@ -85,6 +85,14 @@ public class Photonvision extends SubsystemBase{
         enablePhotonInstances = enable;
     }
 
+    public boolean hasSpeakerTarget(){
+        if(pipelineResult.hasTargets()){
+            if (speakerCenterTargets.contains(pipelineResult.getBestTarget().getFiducialId())){
+            return true;
+        }
+    }
+        return false;
+    }
     /**
      * 
      * @return RADIANs to speaker target
