@@ -193,4 +193,9 @@ public class Shooter extends SubsystemBase {
     m_flywheel.set(-.1);
     m_flywheelLeft.set(-.1);
   }
+
+public void startFlywheel() {
+    m_flywheel.set(1);
+    m_flywheelLeft.set(1);
+}
 }
