@@ -113,13 +113,10 @@ public class RobotContainer
     driverController.start().onTrue((new InstantCommand(m_drivebase::zeroGyro))); // TODO figure out who should be able to 0 the gyro
     operatorController.a().whileTrue(new Shoot(shooter));
     operatorController.b().onTrue(new InstantCommand(()-> shooter.stop(), shooter));
-    intaking.whileTrue(new RunCommand(() -> operatorController.getHID().setRumble(RumbleType.kBothRumble,1)));
+    intaking.whileTrue(new RunCommand(() -> operatorController.getHID().setRumble(RumbleType.kBothRumble,1)).unless(() -> !DriverStation.isTeleopEnabled()));
     intaking.whileFalse(new RunCommand(() -> operatorController.getHID().setRumble(RumbleType.kBothRumble,0)));
 
-    // driverController.rightBumper().whileTrue(m_drivebase.driveTargetedCommand(        
-    //   () -> MathUtil.applyDeadband(-driverController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
-    //   () -> MathUtil.applyDeadband(-driverController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-    //   () -> -m_photonvision.getSpeakerTarget()));
+    driverController.rightBumper().whileTrue(getPOVTurnCommand((int)(Math.round(Math.toDegrees(-m_photonvision.getSpeakerTarget())))));
 
     // turn based on D-Pad input
     driverController.povUp().whileTrue(getPOVTurnCommand(0));
@@ -164,11 +161,14 @@ public class RobotContainer
       //   new InstantCommand(shooter::stop)
       // )
       // new RunCommand(shooter::shoot).withTimeout(2)
-      new Shoot(shooter).withTimeout(2)
+      new Shoot(shooter).withTimeout(.75)
     );
     NamedCommands.registerCommand("intake", 
-      new InstantCommand(shooter::autoIntake)
+      new InstantCommand(shooter::intakeForAutonomous)
       // new Intake(shooter).withTimeout(.1)
+    );
+    NamedCommands.registerCommand("levelIntake",
+      new RunCommand(shooter::spitBackOut).until(() -> !shooter.hasNote()).withTimeout(0.2)
     );
     NamedCommands.registerCommand("intakeStop",
       // new InstantCommand(shooter::stop)

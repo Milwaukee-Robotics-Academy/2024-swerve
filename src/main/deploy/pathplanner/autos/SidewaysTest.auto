@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.0777934283141293,
-      "y": 4.5897429976678135
+      "x": 1.2064433431192452,
+      "y": 5.698044741348875
     },
     "rotation": 0
   },
@@ -12,15 +12,9 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "shoot"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "BottomStep1"
+            "pathName": "SidewaysTest"
           }
         }
       ]

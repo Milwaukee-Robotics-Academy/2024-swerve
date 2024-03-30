@@ -2,7 +2,7 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.2064433431192452,
+      "x": 1.2211290254423093,
       "y": 5.551187918118234
     },
     "rotation": 0
@@ -26,7 +26,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "MiddleStep1"
+            "pathName": "M-2"
           }
         },
         {
@@ -38,13 +38,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "MiddleStep2"
+            "pathName": "2-M"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "readyShot"
+            "name": "levelIntake"
           }
         },
         {
@@ -62,7 +62,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Y-d"
+            "pathName": "M-3"
           }
         },
         {
@@ -74,13 +74,49 @@
         {
           "type": "path",
           "data": {
-            "pathName": "d-Y"
+            "pathName": "3-M"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "readyShot"
+            "name": "levelIntake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "M-1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeStop"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "1-M"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "levelIntake"
           }
         },
         {
