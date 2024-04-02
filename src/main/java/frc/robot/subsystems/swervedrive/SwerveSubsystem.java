@@ -205,7 +205,18 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX,
       DoubleSupplier headingY) {
-
+    // final double AllianceDirectionMultiplier;
+    // Optional<Alliance> alliance = DriverStation.getAlliance();
+    // // reverse controls if red alliance
+    // if (alliance.isPresent()){
+    // if (alliance.get() == Alliance.Red){
+    // AllianceDirectionMultiplier = -1;
+    // } else {
+    // AllianceDirectionMultiplier = 1;
+    // }
+    // } else {
+    // AllianceDirectionMultiplier = 1;
+    // }
     // swerveDrive.setHeadingCorrection(true); // Normally you would want heading
     // correction for this kind of control.
     return run(() -> {
@@ -213,6 +224,8 @@ public class SwerveSubsystem extends SubsystemBase {
       double yInput = Math.pow(translationY.getAsDouble(), 3); // Smooth controll out
       // Make the robot move
       driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(xInput, yInput,
+          // AllianceDirectionMultiplier * headingX.getAsDouble(),
+          // AllianceDirectionMultiplier * headingY.getAsDouble(),
           headingX.getAsDouble(),
           headingY.getAsDouble(),
           swerveDrive.getOdometryHeading().getRadians(),
@@ -303,9 +316,24 @@ public class SwerveSubsystem extends SubsystemBase {
   public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY,
       DoubleSupplier angularRotationX) {
     return run(() -> {
+      final double allianceDirectionMultiplier;
+      Optional<Alliance> alliance = DriverStation.getAlliance();
+      // reverse controls if red alliance
+      if (alliance.isPresent()) {
+        if (alliance.get() == Alliance.Red) {
+          allianceDirectionMultiplier = -1;
+        } else {
+          allianceDirectionMultiplier = 1;
+        }
+      } else {
+        allianceDirectionMultiplier = 1;
+      }
+  
       // Make the robot move
-      swerveDrive.drive(new Translation2d(Math.pow(translationX.getAsDouble(), 3) * swerveDrive.getMaximumVelocity(),
-          Math.pow(translationY.getAsDouble(), 3) * swerveDrive.getMaximumVelocity()),
+      swerveDrive.drive(
+          new Translation2d(
+              Math.pow(translationX.getAsDouble() * allianceDirectionMultiplier, 3) * swerveDrive.getMaximumVelocity(),
+              Math.pow(translationY.getAsDouble() * allianceDirectionMultiplier, 3) * swerveDrive.getMaximumVelocity()),
           Math.pow(angularRotationX.getAsDouble(), 3) * swerveDrive.getMaximumAngularVelocity(),
           true,
           false);
