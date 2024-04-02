@@ -315,28 +315,25 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY,
       DoubleSupplier angularRotationX) {
-        return run(() -> {
-          final double allianceDirectionMultiplier;
-    Optional<Alliance> alliance = DriverStation.getAlliance();
-    // reverse controls if red alliance
-    if (alliance.isPresent()) {
-      if (alliance.get() == Alliance.Red) {
-
-        allianceDirectionMultiplier = -1;
+    return run(() -> {
+      final double allianceDirectionMultiplier;
+      Optional<Alliance> alliance = DriverStation.getAlliance();
+      // reverse controls if red alliance
+      if (alliance.isPresent()) {
+        if (alliance.get() == Alliance.Red) {
+          allianceDirectionMultiplier = -1;
+        } else {
+          allianceDirectionMultiplier = 1;
+        }
       } else {
         allianceDirectionMultiplier = 1;
       }
-    } else {
-      allianceDirectionMultiplier = 1;
-    }
-SmartDashboard.putBoolean("alliance RED", allianceDirectionMultiplier == -1);
-SmartDashboard.putNumber("Translation X",Math.pow(translationX.getAsDouble()*allianceDirectionMultiplier, 3) * swerveDrive.getMaximumVelocity());
-
+  
       // Make the robot move
       swerveDrive.drive(
           new Translation2d(
-              Math.pow(translationX.getAsDouble()*allianceDirectionMultiplier, 3) * swerveDrive.getMaximumVelocity(),
-              Math.pow(translationY.getAsDouble()*allianceDirectionMultiplier, 3) * swerveDrive.getMaximumVelocity()),
+              Math.pow(translationX.getAsDouble() * allianceDirectionMultiplier, 3) * swerveDrive.getMaximumVelocity(),
+              Math.pow(translationY.getAsDouble() * allianceDirectionMultiplier, 3) * swerveDrive.getMaximumVelocity()),
           Math.pow(angularRotationX.getAsDouble(), 3) * swerveDrive.getMaximumAngularVelocity(),
           true,
           false);
