@@ -179,7 +179,7 @@ public class RobotContainer {
     // new Intake(shooter).withTimeout(.1)
     );
     NamedCommands.registerCommand("levelIntake",
-        new RunCommand(shooter::spitBackOut).until(() -> !shooter.hasNote()).withTimeout(0.2));
+        new RunCommand(shooter::spitBackOut).until(() -> !shooter.hasNote()).withTimeout(0.1));
     NamedCommands.registerCommand("intakeStop",
         // new InstantCommand(shooter::stop)
         new StopShooter(shooter).withTimeout(0.0));

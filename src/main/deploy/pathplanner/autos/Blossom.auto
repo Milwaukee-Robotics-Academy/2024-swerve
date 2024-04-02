@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.8099299203965142,
-      "y": 6.520442951440464
+      "x": 1.2064433431192452,
+      "y": 5.5430292057165325
     },
-    "rotation": 59.03624346792656
+    "rotation": 0.865865255473327
   },
   "command": {
     "type": "sequential",
@@ -26,37 +26,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "TopStep1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intakeStop"
+            "pathName": "MiddleStep1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "TopStep2"
+            "pathName": "MiddleStep2"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "readyShot"
+            "name": "levelIntake"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "shoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intakeStop"
           }
         }
       ]

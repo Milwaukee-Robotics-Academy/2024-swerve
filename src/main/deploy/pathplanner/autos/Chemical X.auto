@@ -30,12 +30,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "intakeStop"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "3-S"
@@ -44,7 +38,7 @@
         {
           "type": "named",
           "data": {
-            "name": "readyShot"
+            "name": "levelIntake"
           }
         },
         {
@@ -66,12 +60,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "intakeStop"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "7-S"
@@ -80,7 +68,7 @@
         {
           "type": "named",
           "data": {
-            "name": "readyShot"
+            "name": "levelIntake"
           }
         },
         {

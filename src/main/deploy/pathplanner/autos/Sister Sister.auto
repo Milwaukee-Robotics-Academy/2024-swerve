@@ -30,12 +30,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "intakeStop"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "BottomStep2"
@@ -51,12 +45,6 @@
           "type": "named",
           "data": {
             "name": "shoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intakeStop"
           }
         }
       ]

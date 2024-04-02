@@ -135,12 +135,12 @@ public class Shooter extends SubsystemBase {
   public void shoot() {
     m_flywheel.set(1);
     m_flywheelLeft.set(1);
-    if (m_flywheel.getEncoder().getVelocity() > 5000){
+   // if (m_flywheel.getEncoder().getVelocity() > 5000){
       m_triggerMotor.set(.5);
       m_triggerMotorLeft.set(.5);
       m_upperIntake.set(0.3);
       m_lowerIntake.set(0.3);
-    }
+ //   }
   }
 
   // version of shoot that doesn't use the intakes; note can't get stuck in them
