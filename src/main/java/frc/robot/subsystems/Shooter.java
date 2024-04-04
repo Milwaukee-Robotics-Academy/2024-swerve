@@ -128,8 +128,8 @@ public class Shooter extends SubsystemBase {
     m_lowerIntake.set(0);
     m_triggerMotor.set(-0.1);
     m_triggerMotorLeft.set(-0.1);
-    m_flywheel.set(.0);
-    m_flywheelLeft.set(.0);
+    m_flywheel.set(-0.05);
+    m_flywheelLeft.set(-0.05);
   }
 
   public void shoot() {
