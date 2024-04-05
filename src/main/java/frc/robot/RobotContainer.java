@@ -247,6 +247,6 @@ public class RobotContainer {
     // }
     // }
     // TODO uncomment this code
-
+    SmartDashboard.putNumber("Match Time Left", DriverStation.getMatchTime())
   }
 }
