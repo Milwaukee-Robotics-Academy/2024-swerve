@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -248,5 +250,12 @@ public class RobotContainer {
     // }
     // TODO uncomment this code
     SmartDashboard.putNumber("Match Time Left", DriverStation.getMatchTime());
+<<<<<<< HEAD
+=======
+    // Shuffleboard.getTab("Goldishots")
+    // .add("Match Time", DriverStation.getMatchTime())
+    // .withWidget(BuiltInWidgets.kDial) // give dial bar on shuffle board
+    // .withSize(12, 12); // make the widget 12x12
+>>>>>>> new-bomb-pop
   }
 }
