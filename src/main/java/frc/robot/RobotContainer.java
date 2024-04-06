@@ -131,6 +131,14 @@ public class RobotContainer {
         getPOVTurnCommand((int) (Math.round(Math.toDegrees(-m_photonvision.getSpeakerTarget()))))
             .unless(() -> !m_photonvision.hasSpeakerTarget()));
 
+    // slow mode for driving
+    // driverController.leftBumper().whileTrue(
+    //   new InstantCommand(() -> m_drivebase.setSlowMode(true))
+    // );
+    // driverController.leftBumper().whileFalse(
+    //   new InstantCommand(() -> m_drivebase.setSlowMode(false))
+    // );
+
     // turn based on D-Pad input
     driverController.povUp().whileTrue(getPOVTurnCommand(0));
     driverController.povUpLeft().whileTrue(getPOVTurnCommand(55));
@@ -149,6 +157,9 @@ public class RobotContainer {
         .andThen(new InstantCommand(() -> driverController.getHID().setRumble(RumbleType.kBothRumble, 0))));
     operatorController.y().whileTrue(new ManualIntake(shooter));
     operatorController.leftBumper().whileTrue(new SpitBackOut(shooter));
+    // unused smaller shot for funnel purposes
+      // operatorController.povDown().onTrue(new smallShoot(shooter));
+    
     // new InstantCommand(()->shooter.stop()).handleInterrupt(() ->
     // shooter.stop())));
 
@@ -250,12 +261,9 @@ public class RobotContainer {
     // }
     // TODO uncomment this code
     SmartDashboard.putNumber("Match Time Left", DriverStation.getMatchTime());
-<<<<<<< HEAD
-=======
     // Shuffleboard.getTab("Goldishots")
     // .add("Match Time", DriverStation.getMatchTime())
     // .withWidget(BuiltInWidgets.kDial) // give dial bar on shuffle board
     // .withSize(12, 12); // make the widget 12x12
->>>>>>> new-bomb-pop
   }
 }
