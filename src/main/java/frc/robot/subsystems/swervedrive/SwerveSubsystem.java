@@ -55,6 +55,11 @@ public class SwerveSubsystem extends SubsystemBase {
   public double maximumSpeed = Units.feetToMeters(16.0);
 
   /**
+   * Whether the swerve subsystem should be in slow mode.
+   */
+  // private boolean slowMode;
+
+  /**
    * Initialize {@link SwerveDrive} with the directory provided.
    *
    * @param directory Directory of swerve drive config files.
@@ -78,7 +83,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary
     // objects being created.
-    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.LOW;
     try {
       swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed);
       // Alternative method if you don't want to supply the conversion factor via JSON
@@ -222,6 +227,11 @@ public class SwerveSubsystem extends SubsystemBase {
     return run(() -> {
       double xInput = Math.pow(translationX.getAsDouble(), 3); // Smooth controll out
       double yInput = Math.pow(translationY.getAsDouble(), 3); // Smooth controll out
+      // if (this.slowMode)
+      // {
+      //   xInput /= 2;
+      //   yInput /= 2;
+      // }
       // Make the robot move
       driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(xInput, yInput,
           // AllianceDirectionMultiplier * headingX.getAsDouble(),
@@ -591,4 +601,9 @@ public class SwerveSubsystem extends SubsystemBase {
   public void addVisionMeasurement(Pose2d pose, double timestamp) {
     swerveDrive.addVisionMeasurement(pose, timestamp);
   }
+
+  // public void setSlowMode(boolean slowModeIsOn)
+  // {
+  //   this.slowMode = slowModeIsOn;
+  // }
 }

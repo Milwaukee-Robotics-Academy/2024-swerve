@@ -1,3 +1,8 @@
+# FRC Code for team 8802 - Milwaukee United.
+
+This is based on the example and library from YAGSL:
+
+
 # Yet Another Generic Swerve Library (YAGSL) Example project
 
 YAGSL is intended to be an easy implementation of a generic swerve drive that should work for most
