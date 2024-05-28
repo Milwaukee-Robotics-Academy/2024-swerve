@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -31,6 +32,8 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
 import java.util.Optional;
+
+import org.photonvision.EstimatedRobotPose;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -216,36 +219,50 @@ public class RobotContainer {
   }
 
   public void periodic() {
-    // if (m_photonvision.hasTargets())
-    // {
-    // Optional<EstimatedRobotPose> estimatedPose =
-    // m_photonvision.getEstimatedGlobalPose(m_drivebase.getPose());
-    // if (estimatedPose.isPresent())
-    // {
-    // Pose2d robotPose2d = estimatedPose.get().estimatedPose.toPose2d();
-    // double distance =
-    // m_photonvision.getBestTarget().getBestCameraToTarget().getTranslation().getNorm();
-    // }
-    // }
-    // SmartDashboard.putData("HD_USB_Camera-output", m_photonvision);
+    if (m_photonvision.hasTargets())
+    {
+    Optional<EstimatedRobotPose> estimatedPose =
+    m_photonvision.getEstimatedGlobalPose(m_drivebase.getPose());
+    if (estimatedPose.isPresent())
+    {
+    Pose2d robotPose2d = estimatedPose.get().estimatedPose.toPose2d();
+    double distance =
+    m_photonvision.getBestTarget().getBestCameraToTarget().getTranslation().getNorm();
+    }
+    }
+    SmartDashboard.putData("HD_USB_Camera-output", m_photonvision);
     // Check to see if photonvision can see Apriltag targets. if so, get an
     // estimated robot pose based on target and update the odometry
-    // if (m_photonvision.hasTargets()) {
+    if (m_photonvision.hasTargets()) {
+
+    /** straight from photonvision example */
+    var latestResults = m_photonvision.getLatestResults();
+    var imageCaptureTime = latestResults.getTimestampSeconds();
+    var camToTargetTrans = latestResults.getBestTarget().getBestCameraToTarget();
+    var camPose = Constants.kFarTargetPose.transformBy(camToTargetTrans.inverse());
+    m_drivebase.addVisionMeasurement(camPose.transformBy(Constants.kCameraToRobot).toPose2d(), imageCaptureTime);
     // Optional<EstimatedRobotPose> estimatedPose =
     // m_photonvision.getEstimatedGlobalPose(m_drivebase.getPose());
+
+    // SmartDashboard.putBoolean("PosePresent?", estimatedPose.isPresent());
     // if (estimatedPose.isPresent()) {
     // Pose2d robotPose2d = estimatedPose.get().estimatedPose.toPose2d();
     // double distance =
     // m_photonvision.getBestTarget().getBestCameraToTarget().getTranslation().getNorm();
 
-    // //Scale confidence in Vision Measurements based on distance
-    // // m_drivebase.setVisionMeasurementStdDevs(MatBuilder.fill(Nat.N3(),
-    // Nat.N1(), distance * 1.2, distance * 1.2, 0.01));//TODO: find and fix!
-    // //Add VisionMeasurement to odometry
+    //Scale confidence in Vision Measurements based on distance
+    // m_drivebase.setVisionMeasurementStdDevs(MatBuilder.fill(Nat.N3(),
+   // Nat.N1(), distance * 1.2, distance * 1.2, 0.01));//TODO: find and fix!
+    //Add VisionMeasurement to odometry
     // m_drivebase.addVisionMeasurement(new Pose2d(robotPose2d.getTranslation(),
     // m_drivebase.getHeading()), estimatedPose.get().timestampSeconds);
-    // }
-    // }
+
+    SmartDashboard.putNumber("camera X", (new Pose2d(robotPose2d.getTranslation(),
+    m_drivebase.getHeading()).getX()));
+    SmartDashboard.putNumber("camera Y", (new Pose2d(robotPose2d.getTranslation(),
+    m_drivebase.getHeading()).getY()));
+  }
+    }
     // TODO uncomment this code
 
   }

@@ -69,12 +69,16 @@ public class Photonvision extends SubsystemBase{
       return photonPoseEstimator.update();
     }
     
+    public PhotonPipelineResult getLatestResults(){
+        return pipelineResult;
+    }
     @Override
     public void periodic() {
         pipelineResult = camera.getLatestResult();
         SmartDashboard.putBoolean("CameraTargets", pipelineResult.hasTargets());
         if(pipelineResult.hasTargets()){
         SmartDashboard.putNumber("DegreesToSpeaker", getSpeakerTarget());
+
         }
 
 

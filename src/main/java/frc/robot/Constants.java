@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import swervelib.math.Matter;
@@ -61,5 +62,6 @@ public final class Constants
     public static final int kLeftMotorPort = 13;
     public static final int kRightMotorPort = 14;
   }
+    public static final Pose3d kFarTargetPose;
 
 }
