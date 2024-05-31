@@ -219,6 +219,10 @@ public class RobotContainer {
   }
 
   public void periodic() {
+
+    /**
+     * Update the drivetrain odometry with vision measurements when we have april tags in our view
+     */
     if (m_photonvision.hasTargets()) {
       Optional<EstimatedRobotPose> estimatedPose = m_photonvision.getEstimatedGlobalPose(m_drivebase.getPose());
       if (estimatedPose.isPresent()) {
