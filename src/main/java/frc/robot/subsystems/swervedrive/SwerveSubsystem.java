@@ -591,4 +591,8 @@ public class SwerveSubsystem extends SubsystemBase {
   public void addVisionMeasurement(Pose2d pose, double timestamp) {
     swerveDrive.addVisionMeasurement(pose, timestamp);
   }
+
+    public void addVisionMeasurement(Pose2d pose, double timestamp, Matrix<N3, N1> stdDev) {
+    swerveDrive.addVisionMeasurement(pose, timestamp, stdDev);
+  }
 }
