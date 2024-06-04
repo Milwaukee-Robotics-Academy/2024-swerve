@@ -5,14 +5,12 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -28,15 +26,17 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.DoubleSupplier;
 
 public class Photonvision extends SubsystemBase {
     static boolean enablePhotonInstances = true; // Nyahaha
     private final PhotonCamera camera;
+    private final PhotonCamera camera2;
+    
     private PhotonPipelineResult pipelineResult;
     AprilTagFieldLayout aprilTagFieldLayout = null;
     PhotonPoseEstimator photonPoseEstimator;
     private static final List<Integer> speakerCenterTargets = Arrays.asList(4, 7);
+    PhotonPoseEstimator photonPoseEstimator2;
 
     /**
      *  Using Photonvision to update the robot odometry based on april tag locations. Example from 
@@ -45,6 +45,8 @@ public class Photonvision extends SubsystemBase {
      */
     public Photonvision() {
         camera = new PhotonCamera(PhotonVisionConstants.kCameraName);
+        camera2 = new PhotonCamera(PhotonVisionConstants.kCameraName2);
+        
         pipelineResult = new PhotonPipelineResult();
         /**
          * Vision setup
@@ -57,10 +59,14 @@ public class Photonvision extends SubsystemBase {
             Transform3d robotToCam = new Transform3d(
                     new Translation3d(Units.inchesToMeters(10), 0, Units.inchesToMeters(12)),
                     new Rotation3d(0, Math.toRadians(16.0),
-                            Math.PI)); // TODO: find and fix!
+                            Math.PI));
             photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout,
                     PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
                     this.getCamera(),
+                    robotToCam);
+            photonPoseEstimator2 = new PhotonPoseEstimator(aprilTagFieldLayout,
+                    PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+                    this.getCamera2(),
                     robotToCam);
 
         } catch (IOException e) {
@@ -70,6 +76,10 @@ public class Photonvision extends SubsystemBase {
 
     public PhotonCamera getCamera() {
         return camera;
+    }
+
+    public PhotonCamera getCamera2() {
+        return camera2;
     }
 
     public boolean hasTargets() {

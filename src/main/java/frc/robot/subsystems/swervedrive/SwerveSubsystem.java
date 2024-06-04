@@ -7,12 +7,9 @@ package frc.robot.subsystems.swervedrive;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -28,14 +25,12 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.io.File;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
-import swervelib.SwerveModule;
 import swervelib.math.SwerveMath;
 import swervelib.parser.SwerveControllerConfiguration;
 import swervelib.parser.SwerveDriveConfiguration;
@@ -255,11 +250,6 @@ public class SwerveSubsystem extends SubsystemBase {
     // correction for this kind of control.
 
     return run(() -> {
-      SmartDashboard.putNumber("TargetedHeading", headingRadians.getAsDouble());
-      double targetRadians = (headingRadians.getAsDouble() != -999) ? headingRadians.getAsDouble()
-          : swerveDrive.getOdometryHeading().getRadians();
-      DoubleSupplier headingX = () -> Math.cos(targetRadians);
-      DoubleSupplier headingY = () -> Math.sin(targetRadians);
       this.driveCommand(
           translationX,
           translationY,

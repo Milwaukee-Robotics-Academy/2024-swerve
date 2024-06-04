@@ -6,7 +6,6 @@ package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -16,10 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -120,8 +116,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    driverController.start().onTrue((new InstantCommand(m_drivebase::zeroGyro))); // TODO figure out who should be able
-                                                                                  // to 0 the gyro
+    driverController.start().onTrue((new InstantCommand(m_drivebase::zeroGyro))); 
     operatorController.a().whileTrue(new Shoot(shooter));
     operatorController.b().onTrue(new InstantCommand(() -> shooter.stop(), shooter));
     intaking.whileTrue(new RunCommand(() -> operatorController.getHID().setRumble(RumbleType.kBothRumble, 1))
@@ -190,7 +185,6 @@ public class RobotContainer {
         // new RunCommand(shooter::spitBackOut).withTimeout(0.06).andThen(new
         // InstantCommand(shooter::stop)).andThen(new WaitCommand(0.5))
         new SpitBackOut(shooter).withTimeout(0.06).andThen(new WaitCommand(0.5))
-    // TODO we may need to change the timeout to 0.07 or so, it's shooting too low.
     );
   }
 
@@ -227,7 +221,7 @@ public class RobotContainer {
       Optional<EstimatedRobotPose> estimatedPose = m_photonvision.getEstimatedGlobalPose(m_drivebase.getPose());
       if (estimatedPose.isPresent()) {
         Pose2d robotPose2d = estimatedPose.get().estimatedPose.toPose2d();
-        double distance = m_photonvision.getBestTarget().getBestCameraToTarget().getTranslation().getNorm();
+    //    double distance = m_photonvision.getBestTarget().getBestCameraToTarget().getTranslation().getNorm();
         var estimatedStandardDevs = m_photonvision.getEstimationStdDevs(robotPose2d);
         m_drivebase.addVisionMeasurement(robotPose2d, estimatedPose.get().timestampSeconds, estimatedStandardDevs); 
 
